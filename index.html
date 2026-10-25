@@ -371,25 +371,29 @@ document.getElementById("google-login").addEventListener("click",async()=>{const
 document.getElementById("discord-login").addEventListener("click",async()=>{const buttons=[document.getElementById("google-login"),document.getElementById("discord-login")];buttons.forEach(b=>b.disabled=true);document.getElementById("profile-status").textContent="Mengalihkan ke Discord...";const {error}=await chatSupabase.auth.signInWithOAuth({provider:"discord",options:{redirectTo:location.origin+location.pathname+"#profil"}});if(error){document.getElementById("profile-status").textContent="Login Discord gagal: "+error.message;buttons.forEach(b=>b.disabled=false);}});
 document.getElementById("staff-help").addEventListener("click",()=>window.open("https://discord.gg/uwKk9znZem","_blank","noopener,noreferrer"));
 document.getElementById("google-logout").addEventListener("click",async()=>{const button=document.getElementById("google-logout");button.disabled=true;const {error}=await chatSupabase.auth.signOut();button.disabled=false;if(error)document.getElementById("profile-status").textContent="Gagal logout: "+error.message;else{authStateReady=true;setChatUser(null);}});
-chatSupabase.auth.onAuthStateChange((event,session)=>{
-  authStateReady=true;
-  setChatUser(session?.user||null);
-});
-// Read the persisted session first; ignore a slower initial read if a newer auth event arrived.
-const sessionReadVersion=authUpdateVersion;
-chatSupabase.auth.getSession().then(({data,error})=>{
-  if(authUpdateVersion!==sessionReadVersion)return;
-  authStateReady=true;
-  if(error){
-    document.getElementById("profile-status").textContent="Sesi belum dapat diverifikasi. Muat ulang halaman atau login kembali.";
-    return;
+// Initialize the persisted session before subscribing to changes to avoid
+// an initial anonymous event racing with the session restoration.
+async function initializeAuth(){
+  const status=document.getElementById("profile-status");
+  status.textContent="Memverifikasi sesi akun...";
+  try{
+    const {data,error}=await chatSupabase.auth.getSession();
+    if(error) throw error;
+    authStateReady=true;
+    setChatUser(data?.session?.user||null);
+  }catch(error){
+    authStateReady=true;
+    chatUser=null;
+    status.textContent="Sesi belum dapat diverifikasi. Muat ulang halaman atau login kembali.";
+    setChatUser(null);
   }
-  setChatUser(data?.session?.user||null);
-}).catch(()=>{
-  if(authUpdateVersion!==sessionReadVersion)return;
-  authStateReady=true;
-  setChatUser(null);
-});
+  chatSupabase.auth.onAuthStateChange((event,session)=>{
+    authStateReady=true;
+    // Keep the latest user/session state consistent for Google and Discord.
+    setChatUser(session?.user||null);
+  });
+}
+initializeAuth();
 
 async function muatProdukStogra() {
   if (!window.supabase || SUPABASE_PUBLISHABLE_KEY === "GANTI_DENGAN_PUBLISHABLE_KEY_KAMU") {
