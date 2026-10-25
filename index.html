@@ -82,7 +82,7 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
 .profile-card{max-width:520px;margin:25px auto;text-align:center;padding:32px;border:1px solid #652028;border-radius:18px;background:linear-gradient(145deg,#23090d,#101010)}
 .profile-logo{width:88px;height:88px;object-fit:cover;border-radius:20px;margin-bottom:18px;border:1px solid #652028}
 .profile-card h2{margin:10px 0}.profile-status{margin:20px 0;padding:12px;background:#080808;border:1px solid #292929;border-radius:9px;color:#bbb;font-size:13px}
-.profile-card button{margin:4px}
+.profile-card button{margin:4px;justify-content:center;min-width:180px}[hidden]{display:none!important}.profile-actions{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;margin-top:18px}.profile-actions .btn{margin:0}.profile-account{display:none;align-items:center;gap:12px;justify-content:center;margin:18px 0 8px;text-align:left}.profile-account.visible{display:flex}.profile-avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;border:1px solid #652028;background:#171010}.profile-account strong,.profile-account span{display:block;overflow-wrap:anywhere}.profile-account span{font-size:12px;color:#aaa;margin-top:4px}
 @media(max-width:760px){.chat-layout{grid-template-columns:1fr}.chat-sidebar{border-right:0;border-bottom:1px solid #302126}.room-button{padding:9px}.chat-panel{min-height:450px}}
 
 .admin-nav{border-color:#652028;color:#ff6871!important;background:#170b0d}
@@ -226,7 +226,7 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
   </section>
 
   <section id="screen-profil" class="screen section wrap">
-    <div class="profile-card"><img class="profile-logo" src="https://cdn.discordapp.com/attachments/1530127542785151157/1534573785993314416/file_000000008844820686dddd1548743b8b.jpg" alt="Logo STOGRA STORE"><div class="eyebrow">MEMBER AREA</div><h2>Profil <span class="red">Akun</span></h2><p class="sub">Jelajahi katalog tanpa login, atau masuk dengan Google maupun Discord untuk menggunakan chat web.</p><div id="profile-status" class="profile-status">Memeriksa sesi akun...</div><button class="btn primary" id="google-login">Lanjutkan dengan Google</button><button class="btn" id="discord-login">Lanjutkan dengan Discord</button><button class="btn" id="google-logout" hidden>Logout</button><p class="note">Pilih salah satu metode login. Setelah berhasil, nama akun dan status login akan muncul di sini.</p></div>
+    <div class="profile-card"><img class="profile-logo" src="https://cdn.discordapp.com/attachments/1530127542785151157/1534573785993314416/file_000000008844820686dddd1548743b8b.jpg" alt="Logo STOGRA STORE"><div class="eyebrow">MEMBER AREA</div><h2>Profil <span class="red">Akun</span></h2><p class="sub">Jelajahi katalog tanpa login, atau masuk dengan Google maupun Discord untuk menggunakan chat web.</p><div id="profile-status" class="profile-status">Memeriksa sesi akun...</div><div id="profile-account" class="profile-account"><img id="profile-avatar" class="profile-avatar" alt="Foto profil akun"><div><strong id="profile-name">Member</strong><span id="profile-email"></span></div></div><div class="profile-actions" id="profile-login-actions"><button class="btn primary" id="google-login">Lanjutkan dengan Google</button><button class="btn" id="discord-login">Lanjutkan dengan Discord</button></div><div class="profile-actions" id="profile-user-actions" hidden><button class="btn" id="staff-help">Bantuan Staff/Admin ↗</button><button class="btn" id="google-logout" hidden>Logout</button></div><p class="note">Status akun diperbarui otomatis setelah sesi login berhasil diverifikasi.</p></div>
   </section>
 
   <section id="screen-admin" class="screen section wrap">
@@ -330,14 +330,28 @@ document.getElementById("refresh-products").addEventListener("click", () => {
 const chatSupabase = window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 let chatUser=null, chatRoom="lobby";
 const roomNames={lobby:["Lobby","PUBLIC ROOM","Obrolan umum komunitas."],support:["Customer Support","SUPPORT ROOM","Bantuan pesanan dan pertanyaan."],informasi:["Informasi","INFORMATION ROOM","Pertanyaan tentang layanan toko."],produk:["Diskusi Produk","PRODUCT ROOM","Diskusikan produk STOGRA STORE."]};
+let authStateReady=false;
 function setChatUser(user){
- chatUser=user;
- const status=document.getElementById("profile-status"), state=document.getElementById("chat-user-state"), login=document.getElementById("google-login"), discordLogin=document.getElementById("discord-login"), logout=document.getElementById("google-logout"), input=document.getElementById("chat-input"), send=document.getElementById("chat-send");
+ chatUser=user||null;
+ const status=document.getElementById("profile-status"), state=document.getElementById("chat-user-state"), loginActions=document.getElementById("profile-login-actions"), userActions=document.getElementById("profile-user-actions"), logout=document.getElementById("google-logout"), input=document.getElementById("chat-input"), send=document.getElementById("chat-send"), account=document.getElementById("profile-account");
  if(!status)return;
- status.textContent=user?"Login sebagai "+(user.email||"akun Google"):"Belum login";
- state.textContent=user?"Login: "+(user.email||"akun Google"):"Login Google atau Discord diperlukan untuk mengirim pesan.";
- login.hidden=!!user;discordLogin.hidden=!!user;logout.hidden=!user;input.disabled=!user;send.disabled=!user;
- if(user)loadChat();else document.getElementById("chat-messages").innerHTML='<div class="chat-empty"><strong>Login untuk memulai chat</strong><p>Katalog tetap bisa dilihat tanpa login.</p></div>';
+ const loggedIn=!!chatUser;
+ status.textContent=!authStateReady?"Memverifikasi sesi akun...":loggedIn?"Berhasil login — akun terhubung.":"Belum login";
+ loginActions.hidden=loggedIn;userActions.hidden=!loggedIn;logout.hidden=!loggedIn;
+ if(loggedIn){
+   const meta=chatUser.user_metadata||{}, provider=chatUser.app_metadata?.provider||"akun";
+   const name=meta.full_name||meta.name||meta.user_name||chatUser.email?.split("@")[0]||"Member STOGRA";
+   document.getElementById("profile-name").textContent=name;
+   document.getElementById("profile-email").textContent=(chatUser.email||"Akun "+provider)+" · Login via "+provider;
+   const avatar=document.getElementById("profile-avatar"), avatarUrl=meta.avatar_url||meta.picture||"";
+   if(avatarUrl){avatar.src=avatarUrl;avatar.hidden=false;}else{avatar.removeAttribute("src");avatar.hidden=true;}
+   account.classList.add("visible");
+ }else{
+   account.classList.remove("visible");
+ }
+ state.textContent=loggedIn?"Login: "+(chatUser.email||"akun "+(chatUser.app_metadata?.provider||"member")):"Login Google atau Discord diperlukan untuk mengirim pesan.";
+ input.disabled=!loggedIn;send.disabled=!loggedIn;
+ if(loggedIn)loadChat();else document.getElementById("chat-messages").innerHTML='<div class="chat-empty"><strong>Login untuk memulai chat</strong><p>Katalog tetap bisa dilihat tanpa login.</p></div>';
 }
 async function loadChat(){
  const box=document.getElementById("chat-messages"),foot=document.getElementById("chat-footnote");
@@ -350,9 +364,20 @@ document.querySelectorAll("[data-room]").forEach(b=>b.addEventListener("click",(
 document.getElementById("chat-form").addEventListener("submit",async e=>{e.preventDefault();const input=document.getElementById("chat-input"),message=input.value.trim(),foot=document.getElementById("chat-footnote");if(!chatUser||!message)return;const name=chatUser.user_metadata?.full_name||chatUser.user_metadata?.name||chatUser.email?.split("@")[0]||"Member";const {error}=await chatSupabase.from("web_chat_messages").insert({room:chatRoom,user_id:chatUser.id,display_name:name,message});if(error){foot.textContent="Gagal mengirim: "+error.message;return;}input.value="";await loadChat();});
 document.getElementById("google-login").addEventListener("click",async()=>{const buttons=[document.getElementById("google-login"),document.getElementById("discord-login")];buttons.forEach(b=>b.disabled=true);document.getElementById("profile-status").textContent="Mengalihkan ke Google...";const {error}=await chatSupabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname+"#profil"}});if(error){document.getElementById("profile-status").textContent="Login Google gagal: "+error.message;buttons.forEach(b=>b.disabled=false);}});
 document.getElementById("discord-login").addEventListener("click",async()=>{const buttons=[document.getElementById("google-login"),document.getElementById("discord-login")];buttons.forEach(b=>b.disabled=true);document.getElementById("profile-status").textContent="Mengalihkan ke Discord...";const {error}=await chatSupabase.auth.signInWithOAuth({provider:"discord",options:{redirectTo:location.origin+location.pathname+"#profil"}});if(error){document.getElementById("profile-status").textContent="Login Discord gagal: "+error.message;buttons.forEach(b=>b.disabled=false);}});
-document.getElementById("google-logout").addEventListener("click",async()=>{const {error}=await chatSupabase.auth.signOut();if(error)document.getElementById("profile-status").textContent=error.message;else setChatUser(null);});
-chatSupabase.auth.getSession().then(({data})=>setChatUser(data.session?.user||null));
-chatSupabase.auth.onAuthStateChange((_e,s)=>setChatUser(s?.user||null));
+document.getElementById("staff-help").addEventListener("click",()=>window.open("https://discord.gg/uwKk9znZem","_blank","noopener,noreferrer"));
+document.getElementById("google-logout").addEventListener("click",async()=>{const button=document.getElementById("google-logout");button.disabled=true;const {error}=await chatSupabase.auth.signOut();button.disabled=false;if(error)document.getElementById("profile-status").textContent="Gagal logout: "+error.message;else{authStateReady=true;setChatUser(null);}});
+chatSupabase.auth.onAuthStateChange((event,session)=>{
+  authStateReady=true;
+  setChatUser(session?.user||null);
+});
+chatSupabase.auth.getSession().then(({data,error})=>{
+  authStateReady=true;
+  if(error)document.getElementById("profile-status").textContent="Sesi belum dapat diverifikasi. Muat ulang halaman atau login kembali.";
+  setChatUser(data?.session?.user||null);
+}).catch(()=>{
+  authStateReady=true;
+  setChatUser(null);
+});
 
 async function muatProdukStogra() {
   if (!window.supabase || SUPABASE_PUBLISHABLE_KEY === "GANTI_DENGAN_PUBLISHABLE_KEY_KAMU") {
