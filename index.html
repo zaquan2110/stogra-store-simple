@@ -51,10 +51,42 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:20px;paddi
 footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px solid #222}
 .note{font-size:12px;color:#888;margin-top:22px}
 #catalog-message{padding:18px;border:1px solid #292929;border-radius:10px;color:#aaa;line-height:1.7}
+
+.screen{display:none;min-height:65vh}.screen.active{display:block}
+.screen-nav{align-items:center}
+.nav-item{font:inherit;color:#bbb;background:transparent;border:1px solid transparent;border-radius:8px;padding:9px 12px;cursor:pointer}
+.nav-item:hover,.nav-item.active{color:#fff;background:#251014;border-color:#652028}
+.quick-stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.quick-stats div{min-width:105px;padding:13px 15px;border:1px solid #292929;border-radius:10px;background:#101010}
+.quick-stats strong,.quick-stats span{display:block}.quick-stats strong{font-size:18px;color:#fff}.quick-stats span{font-size:11px;color:#999;margin-top:5px}
+.lobby-status{margin-top:25px;padding-top:16px;border-top:1px solid #ffffff18;color:#c9c9c9;font-size:12px}
+.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#52d88a;box-shadow:0 0 12px #52d88a;margin-right:8px}
+.feature-card{text-align:left;color:inherit;font:inherit;cursor:pointer;width:100%;padding:23px;border:1px solid #292929;background:linear-gradient(160deg,#151515,#0d0d0d);border-radius:13px;transition:.2s}
+.feature-card:hover,.contact-card:hover{border-color:#a42b35;transform:translateY(-3px)}
+.feature-icon,.contact-symbol{display:block;font-size:30px;color:#ff4652;margin-bottom:18px}
+.feature-card h3,.contact-card h3{margin:12px 0 8px}
+.feature-card p,.contact-card p{color:#aaa;line-height:1.7;font-size:14px}
+.feature-link{display:inline-block;color:#ff6b73;font-weight:800;font-size:13px;margin-top:12px}
+.catalog-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.catalog-label{font-size:11px;letter-spacing:.18em;color:#ff6069;font-weight:900}
+.info-banner{padding:28px;border:1px solid #652028;border-radius:16px;background:linear-gradient(130deg,#29090d,#111 70%);margin-bottom:22px}
+.info-banner h3{font-size:clamp(22px,3vw,30px);margin:12px 0}
+.info-banner p{color:#bbb;line-height:1.8;max-width:760px}
+.faq-list{display:grid;gap:12px}
+.faq{border:1px solid #292929;border-radius:11px;background:#101010;padding:18px 20px}
+.faq summary{font-weight:800;cursor:pointer;line-height:1.6}
+.faq summary::marker{color:#ff4652}
+.faq p{color:#aaa;line-height:1.8;margin-bottom:0}
+.contact-card{padding:24px;border:1px solid #292929;border-radius:13px;background:linear-gradient(160deg,#151515,#0d0d0d);transition:.2s}
+.contact-card .btn{margin-top:10px}
+.notice{margin-top:24px;padding:20px;border:1px solid #3b2828;background:#120d0e;border-radius:12px}
+.notice p{color:#aaa;line-height:1.8;margin-bottom:0}
+#catalog-message{margin-bottom:18px}
+
 @media(max-width:760px){
  .hero{grid-template-columns:1fr;padding:58px 0}
  .grid{grid-template-columns:1fr}
- .links{gap:12px;font-size:12px}
+ .links{gap:4px;font-size:12px}.nav-item{padding:8px 9px}
  .hero-card{padding:22px}
  nav{align-items:flex-start}
  .brand{font-size:14px}
@@ -66,63 +98,77 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
 <header>
   <nav class="wrap">
     <a class="brand" href="#">STOGRA <span>STORE</span></a>
-    <div class="links">
-      <a href="#produk">Produk</a>
-      <a href="#komunitas">Komunitas</a>
-      <a href="https://discord.gg/uwKk9znZem" target="_blank" rel="noopener">Chat Staff ↗</a>
+    <div class="links screen-nav" aria-label="Navigasi utama">
+      <button class="nav-item active" data-screen="lobby">Lobby</button>
+      <button class="nav-item" data-screen="produk">Produk</button>
+      <button class="nav-item" data-screen="informasi">Informasi</button>
+      <button class="nav-item" data-screen="komunikasi">Komunikasi</button>
     </div>
   </nav>
 </header>
 
 <main>
-  <section class="hero wrap">
-    <div>
-      <div class="eyebrow">DIGITAL GAMING STORE</div>
-      <h1>BUILD YOUR<br><span class="red">NEXT LEVEL.</span></h1>
-      <p>Temukan Script, UI, Map, Assets, dan layanan Roblox Studio untuk membantu proyek game kamu berkembang bersama STOGRA STORE.</p>
-      <div class="actions">
-        <a class="btn primary" href="#produk">Lihat Katalog</a>
-        <a class="btn" href="https://discord.gg/uwKk9znZem" target="_blank" rel="noopener">Chat Staff di Discord</a>
+  <section id="screen-lobby" class="screen active">
+    <section class="hero wrap">
+      <div>
+        <div class="eyebrow">DIGITAL GAMING STORE</div>
+        <h1>BUILD YOUR<br><span class="red">NEXT LEVEL.</span></h1>
+        <p>Selamat datang di STOGRA STORE — pusat produk digital dan layanan Roblox Studio. Jelajahi katalog, pelajari layanan, atau hubungi tim kami.</p>
+        <div class="actions">
+          <button class="btn primary" data-go="produk">Jelajahi Produk ↗</button>
+          <button class="btn" data-go="informasi">Pusat Informasi</button>
+        </div>
+        <div class="quick-stats">
+          <div><strong id="stat-products">—</strong><span>Produk aktif</span></div>
+          <div><strong>24/7</strong><span>Akses katalog</span></div>
+          <div><strong>Discord</strong><span>Dukungan staff</span></div>
+        </div>
       </div>
-    </div>
-    <aside class="hero-card">
-      <div class="eyebrow">WELCOME TO</div>
-      <h2>STOGRA STORE</h2>
-      <p>Digital products and development services for your next Roblox project.</p>
-      <div class="chips">
-        <div class="chip">SCRIPT</div>
-        <div class="chip">UI DESIGN</div>
-        <div class="chip">MAP</div>
+      <aside class="hero-card">
+        <div class="eyebrow">WELCOME TO</div><h2>STOGRA STORE</h2>
+        <p>Build smarter. Create better. Level up your Roblox experience.</p>
+        <div class="chips"><div class="chip">SCRIPT</div><div class="chip">UI DESIGN</div><div class="chip">MAP</div></div>
+        <div class="lobby-status"><span class="status-dot"></span> Katalog terhubung ke database</div>
+      </aside>
+    </section>
+    <section class="section wrap">
+      <div class="section-head"><small>QUICK ACCESS</small><h2>Mulai dari sini</h2><p class="sub">Setiap menu punya fungsi khusus supaya kamu lebih mudah menemukan yang dibutuhkan.</p></div>
+      <div class="grid">
+        <button class="feature-card" data-go="produk"><span class="feature-icon">▦</span><span class="tag">STORE</span><h3>Katalog Produk</h3><p>Lihat produk aktif, kategori, deskripsi, dan harga dari database.</p><span class="feature-link">Buka katalog →</span></button>
+        <button class="feature-card" data-go="informasi"><span class="feature-icon">ⓘ</span><span class="tag">HELP CENTER</span><h3>Pusat Informasi</h3><p>Pelajari cara order, pembayaran, proses pengerjaan, dan pertanyaan umum.</p><span class="feature-link">Baca informasi →</span></button>
+        <button class="feature-card" data-go="komunikasi"><span class="feature-icon">◉</span><span class="tag">SUPPORT</span><h3>Ruang Komunikasi</h3><p>Hubungi staff melalui Discord untuk bertanya, konsultasi, atau memesan.</p><span class="feature-link">Hubungi staff →</span></button>
       </div>
-    </aside>
+    </section>
   </section>
 
-  <section id="produk" class="section wrap">
-    <div class="section-head">
-      <small>OUR CATALOG</small>
-      <h2>Produk Pilihan</h2>
-      <p class="sub">Produk aktif dari katalog STOGRA STORE. Pilih produk untuk bertanya kepada staff.</p>
-    </div>
-
+  <section id="screen-produk" class="screen section wrap">
+    <div class="section-head"><small>OUR CATALOG</small><h2>Katalog Produk</h2><p class="sub">Produk aktif STOGRA STORE. Data dibaca langsung dari Supabase.</p></div>
+    <div class="catalog-toolbar"><span class="catalog-label">SEMUA PRODUK</span><button class="btn" id="refresh-products">↻ Perbarui katalog</button></div>
     <div id="catalog-message" role="status" aria-live="polite">Memuat produk STOGRA STORE...</div>
     <div class="grid" id="product-grid"></div>
-
-    <p class="note">Harga dan informasi produk ditampilkan sesuai data katalog. Untuk pemesanan, silakan hubungi staff melalui Discord.</p>
+    <p class="note">Harga dan informasi mengikuti data katalog. Untuk pemesanan, hubungi staff melalui ruang komunikasi.</p>
   </section>
 
-  <section id="komunitas" class="section community">
-    <div class="wrap">
-      <div class="section-head">
-        <small>JOIN OUR COMMUNITY</small>
-        <h2>Bergabung dengan Kami</h2>
-        <p class="sub">Ikuti komunitas dan kabar terbaru STOGRA STORE.</p>
-      </div>
-      <div class="socials">
-        <a class="btn primary" href="https://discord.gg/uwKk9znZem" target="_blank" rel="noopener">Discord ↗</a>
-        <a class="btn" href="https://www.instagram.com/staragam/" target="_blank" rel="noopener">Instagram ↗</a>
-        <a class="btn" href="https://www.tiktok.com/" target="_blank" rel="noopener">TikTok ↗</a>
-      </div>
+  <section id="screen-informasi" class="screen section wrap">
+    <div class="section-head"><small>INFORMATION CENTER</small><h2>Pusat Informasi</h2><p class="sub">Panduan singkat untuk membantu kamu berbelanja di STOGRA STORE.</p></div>
+    <div class="info-banner"><div class="eyebrow">STOGRA STORE GUIDE</div><h3>Butuh produk untuk project Roblox kamu?</h3><p>Pilih produk dari katalog, baca deskripsinya, lalu hubungi staff untuk memastikan detail dan ketersediaan sebelum memesan.</p><button class="btn primary" data-go="produk">Lihat katalog →</button></div>
+    <div class="faq-list">
+      <details class="faq" open><summary>Bagaimana cara memesan produk?</summary><p>Buka menu Produk, pilih produk yang kamu inginkan, lalu tekan tombol Tanya Staff untuk berdiskusi dengan tim STOGRA STORE di Discord.</p></details>
+      <details class="faq"><summary>Bagaimana cara mengetahui harga?</summary><p>Harga yang tersedia ditampilkan pada kartu produk. Pastikan kembali detail, cakupan layanan, dan harga akhir bersama staff sebelum melakukan pembayaran.</p></details>
+      <details class="faq"><summary>Bagaimana jika saya membutuhkan produk khusus?</summary><p>Hubungi staff melalui Discord dan jelaskan kebutuhan, referensi, fitur, serta target project kamu. Staff akan membantu membahas ruang lingkup pengerjaan.</p></details>
+      <details class="faq"><summary>Bagaimana proses pembayaran?</summary><p>Konfirmasikan metode pembayaran dan instruksi terbaru langsung kepada staff resmi. Jangan mengirim pembayaran sebelum detail pesanan disepakati.</p></details>
+      <details class="faq"><summary>Apakah produk langsung dikirim otomatis?</summary><p>Untuk saat ini, konfirmasi pesanan dan pengiriman perlu dibicarakan dengan staff. Website ini belum memproses pembayaran atau pengiriman digital secara otomatis.</p></details>
     </div>
+  </section>
+
+  <section id="screen-komunikasi" class="screen section wrap">
+    <div class="section-head"><small>COMMUNICATION HUB</small><h2>Ruang Komunikasi</h2><p class="sub">Pilih jalur komunikasi sesuai kebutuhanmu.</p></div>
+    <div class="grid communication-grid">
+      <article class="contact-card"><div class="contact-symbol">◉</div><div class="tag">CUSTOMER SUPPORT</div><h3>Chat Staff di Discord</h3><p>Untuk pertanyaan produk, konsultasi, pemesanan, dan bantuan pesanan. Kamu akan diarahkan ke server Discord resmi STOGRA STORE.</p><a class="btn primary" href="https://discord.gg/uwKk9znZem" target="_blank" rel="noopener">Buka Discord ↗</a></article>
+      <article class="contact-card"><div class="contact-symbol">ⓘ</div><div class="tag">SELF SERVICE</div><h3>Informasi & FAQ</h3><p>Cari tahu cara order, informasi harga, dan proses pemesanan tanpa harus bertanya berulang kali.</p><button class="btn" data-go="informasi">Buka Pusat Informasi →</button></article>
+      <article class="contact-card"><div class="contact-symbol">▦</div><div class="tag">PRODUCT ASSISTANCE</div><h3>Tanya Produk</h3><p>Belum yakin produk mana yang cocok? Lihat daftar produk dan catat nama produk sebelum menghubungi staff.</p><button class="btn" data-go="produk">Pilih Produk →</button></article>
+    </div>
+    <div class="notice"><strong>Catatan komunikasi</strong><p>Chat langsung di dalam website belum diaktifkan. Saat ini komunikasi pesanan dilakukan melalui Discord. Fitur live chat internal membutuhkan login pengguna, kebijakan akses database, dan sistem keamanan tambahan.</p></div>
   </section>
 </main>
 
@@ -148,6 +194,33 @@ function buatElemen(tag, className, text) {
   if (text !== undefined) el.textContent = text;
   return el;
 }
+
+
+function bukaScreen(nama) {
+  document.querySelectorAll(".screen").forEach((screen) => {
+    screen.classList.toggle("active", screen.id === "screen-" + nama);
+  });
+  document.querySelectorAll("[data-screen]").forEach((button) => {
+    const active = button.dataset.screen === nama;
+    button.classList.toggle("active", active);
+    if (active) button.setAttribute("aria-current", "page");
+    else button.removeAttribute("aria-current");
+  });
+  if (nama === "produk" && !window.__stograProductsLoaded) muatProdukStogra();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  history.replaceState(null, "", "#" + nama);
+}
+
+document.querySelectorAll("[data-screen]").forEach((button) => {
+  button.addEventListener("click", () => bukaScreen(button.dataset.screen));
+});
+document.querySelectorAll("[data-go]").forEach((button) => {
+  button.addEventListener("click", () => bukaScreen(button.dataset.go));
+});
+document.getElementById("refresh-products").addEventListener("click", () => {
+  window.__stograProductsLoaded = false;
+  muatProdukStogra();
+});
 
 async function muatProdukStogra() {
   if (!window.supabase || SUPABASE_PUBLISHABLE_KEY === "GANTI_DENGAN_PUBLISHABLE_KEY_KAMU") {
@@ -176,12 +249,15 @@ async function muatProdukStogra() {
   const { data, error } = result;
 
   if (error) {
+    window.__stograProductsLoaded = false;
     console.error("Supabase catalog error:", error);
     message.textContent = "Gagal memuat katalog (" + (error.code || "tanpa kode") + "): " + error.message;
     return;
   }
 
+  window.__stograProductsLoaded = true;
   grid.replaceChildren();
+  document.getElementById("stat-products").textContent = data ? data.length : 0;
 
   if (!data || data.length === 0) {
     message.textContent = "Belum ada produk aktif di katalog STOGRA STORE.";
@@ -229,6 +305,8 @@ async function muatProdukStogra() {
   });
 }
 
+const initialScreen = location.hash.replace("#", "");
+bukaScreen(["lobby","produk","informasi","komunikasi"].includes(initialScreen) ? initialScreen : "lobby");
 muatProdukStogra();
 </script>
 </body>
