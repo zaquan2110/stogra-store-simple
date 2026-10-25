@@ -66,6 +66,19 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
 .room-button strong,.room-button small{display:block}.room-button strong{font-size:12px}.room-button small{font-size:11px;color:#888;margin-top:5px}
 .room-button.active,.room-button:hover{background:#251014;border-color:#652028}
 .chat-sidebar-foot{font-size:11px;color:#888;line-height:1.6;margin-top:auto;padding:14px 4px 2px;border-top:1px solid #ffffff14}
+.dm-section{border-top:1px solid #ffffff14;padding-top:12px;margin-top:4px}
+.dm-section-head{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:12px;margin-bottom:8px}
+.dm-section-head .text-link{font-size:11px;white-space:nowrap}
+.dm-new-form{display:grid;gap:7px;padding:8px;background:#090909;border:1px solid #302323;border-radius:8px;margin-bottom:8px}
+.dm-new-form label,.dm-new-form p{font-size:10px;color:#aaa;margin:0;overflow-wrap:anywhere}
+.dm-new-form input{width:100%;min-width:0;box-sizing:border-box;background:#111;border:1px solid #393030;color:#fff;border-radius:6px;padding:9px}
+.dm-new-form .btn{padding:8px;font-size:11px}
+.dm-list{display:flex;flex-direction:column;gap:5px;max-height:180px;overflow:auto}
+.dm-list small{color:#888;font-size:10px;line-height:1.5}
+.dm-contact{display:block;width:100%;text-align:left;background:#111;border:1px solid #302323;border-radius:7px;padding:9px;color:#eee;cursor:pointer;overflow-wrap:anywhere}
+.dm-contact.active,.dm-contact:hover{background:#251014;border-color:#652028}
+.dm-contact strong,.dm-contact small{display:block}.dm-contact strong{font-size:11px}.dm-contact small{font-size:10px;color:#888;margin-top:4px}
+@media(max-width:700px){.chat-layout{grid-template-columns:1fr}.chat-sidebar{border-right:0;border-bottom:1px solid #302126}.dm-list{max-height:140px}}
 .chat-panel{display:flex;flex-direction:column;min-width:0;min-height:540px}
 .chat-room-head{padding:20px;border-bottom:1px solid #282020;display:flex;justify-content:space-between;align-items:center;gap:12px}
 .chat-room-head h3{margin:7px 0 4px}.chat-room-head p{margin:0;color:#999;font-size:12px;line-height:1.6}
@@ -284,6 +297,11 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
         <button class="room-button" data-room="support"><span>◉</span><div><strong>Customer Support</strong><small>Bantuan dan pesanan</small></div></button>
         <button class="room-button" data-room="informasi"><span>ⓘ</span><div><strong>Informasi</strong><small>Tanya informasi toko</small></div></button>
         <button class="room-button" data-room="produk"><span>▦</span><div><strong>Diskusi Produk</strong><small>Diskusi produk</small></div></button>
+        <div class="dm-section">
+          <div class="dm-section-head"><strong>Pesan Pribadi</strong><button type="button" class="text-link" id="dm-new-button">+ Chat baru</button></div>
+          <form id="dm-new-form" class="dm-new-form" hidden><label for="dm-recipient">Email akun tujuan</label><input id="dm-recipient" type="email" placeholder="email member" required><button class="btn" type="submit">Mulai DM</button><p id="dm-status" role="status"></p></form>
+          <div id="dm-list" class="dm-list"><small>Login untuk membuka DM.</small></div>
+        </div>
         <div class="chat-sidebar-foot" id="chat-user-state">Login Google atau Discord diperlukan untuk mengirim pesan.</div>
       </aside>
       <section class="chat-panel">
@@ -355,7 +373,28 @@ document.getElementById("refresh-products").addEventListener("click", () => {
 
 
 const chatSupabase = window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-let chatUser=null, chatRoom="lobby";
+let chatUser=null, chatRoom="lobby", activeDmUser=null;
+const dmContacts=new Map();
+function dmRoomId(a,b){return "dm_"+[a,b].sort().join("_");}
+function showChatRoom(room){chatRoom=room;activeDmUser=null;document.querySelectorAll("[data-room]").forEach(x=>x.classList.toggle("active",x.dataset.room===room));const info=roomNames[room];document.getElementById("chat-room-title").textContent=info[0];document.getElementById("chat-room-tag").textContent=info[1];document.getElementById("chat-room-description").textContent=info[2];loadChat();}
+async function loadDmContacts(){
+ const list=document.getElementById("dm-list");if(!chatUser){list.innerHTML="<small>Login untuk membuka DM.</small>";return;}
+ const {data,error}=await chatSupabase.from("web_chat_messages").select("room,user_id,display_name,created_at").like("room","dm_%").order("created_at",{ascending:false}).limit(200);
+ if(error){list.innerHTML="<small>DM memerlukan setup tabel/kebijakan database Supabase.</small>";return;}
+ dmContacts.clear();
+ (data||[]).forEach(m=>{if(!m.room||!m.room.startsWith("dm_"))return;const ids=m.room.slice(3).split("_");if(!ids.includes(chatUser.id))return;const other=ids.find(id=>id!==chatUser.id);if(other&&!dmContacts.has(other))dmContacts.set(other,{id:other,name:m.user_id===other?(m.display_name||"Member"):"Percakapan pribadi",room:m.room});});
+ list.replaceChildren();
+ if(!dmContacts.size){list.innerHTML="<small>Belum ada DM. Gunakan + Chat baru untuk memulai.</small>";return;}
+ dmContacts.forEach(contact=>{const b=document.createElement("button");b.type="button";b.className="dm-contact";b.innerHTML="<strong></strong><small>Pesan pribadi</small>";b.querySelector("strong").textContent=contact.name;b.addEventListener("click",()=>openDm(contact.id,contact.name,contact.room));list.appendChild(b);});
+}
+function openDm(otherId,name,room){
+ if(!chatUser||otherId===chatUser.id)return;
+ activeDmUser=otherId;chatRoom=room;document.querySelectorAll("[data-room]").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".dm-contact").forEach(x=>x.classList.toggle("active",x.querySelector("strong")?.textContent===name));
+ document.getElementById("chat-room-title").textContent=name;document.getElementById("chat-room-tag").textContent="DIRECT MESSAGE";document.getElementById("chat-room-description").textContent="Percakapan pribadi antar akun.";loadChat();
+}
+document.getElementById("dm-new-button").addEventListener("click",()=>{if(!chatUser){document.getElementById("dm-status").textContent="Login terlebih dahulu untuk menggunakan DM.";document.getElementById("dm-new-form").hidden=false;return;}const f=document.getElementById("dm-new-form");f.hidden=!f.hidden;});
+document.getElementById("dm-new-form").addEventListener("submit",async e=>{e.preventDefault();const status=document.getElementById("dm-status");if(!chatUser){status.textContent="Login terlebih dahulu.";return;}const email=document.getElementById("dm-recipient").value.trim().toLowerCase();status.textContent="Mencari akun...";const {data,error}=await chatSupabase.from("web_chat_messages").select("user_id,display_name,room").neq("user_id",chatUser.id).limit(500);if(error){status.textContent="Database belum mengizinkan pencarian member untuk DM. Perlu direktori member yang aman di Supabase.";return;}status.textContent="Pencarian email tidak tersedia dari pesan publik. Diperlukan tabel direktori member Supabase agar DM dapat mencari akun secara aman.";});
+
 const roomNames={lobby:["Lobby","PUBLIC ROOM","Obrolan umum komunitas."],support:["Customer Support","SUPPORT ROOM","Bantuan pesanan dan pertanyaan."],informasi:["Informasi","INFORMATION ROOM","Pertanyaan tentang layanan toko."],produk:["Diskusi Produk","PRODUCT ROOM","Diskusikan produk STOGRA STORE."]};
 let authStateReady=false;
 let authUpdateVersion=0;
@@ -384,8 +423,8 @@ function setChatUser(user){
  }
  state.textContent=!authStateReady?"Memverifikasi sesi...":loggedIn?"Login: "+(chatUser.email||"akun "+(chatUser.app_metadata?.provider||"member")):"Belum login — masuk untuk mengirim pesan.";
  input.disabled=!loggedIn;send.disabled=!loggedIn;
- if(loggedIn){loadChat();}
- else document.getElementById("chat-messages").innerHTML='<div class="chat-empty"><strong>Login untuk memulai chat</strong><p>Katalog tetap bisa dilihat tanpa login.</p></div>';
+ if(loggedIn){loadChat();loadDmContacts();}
+ else {document.getElementById("chat-messages").innerHTML='<div class="chat-empty"><strong>Login untuk memulai chat</strong><p>Katalog tetap bisa dilihat tanpa login.</p></div>';loadDmContacts();}
 }
 async function loadChat(){
  const box=document.getElementById("chat-messages"),foot=document.getElementById("chat-footnote");
@@ -394,7 +433,7 @@ async function loadChat(){
  box.replaceChildren();if(!data.length){box.innerHTML='<div class="chat-empty"><strong>Belum ada pesan</strong><p>Mulai percakapan di ruangan ini.</p></div>';return;}
  data.forEach(m=>{const b=document.createElement("article");b.className="chat-bubble"+(m.user_id===chatUser.id?" mine":"");const n=document.createElement("strong");n.textContent=m.display_name||"Member";const p=document.createElement("p");p.textContent=m.message;const t=document.createElement("small");t.textContent=new Date(m.created_at).toLocaleString("id-ID");b.append(n,p,t);box.appendChild(b);});box.scrollTop=box.scrollHeight;foot.textContent="100 pesan terbaru atau kurang.";
 }
-document.querySelectorAll("[data-room]").forEach(b=>b.addEventListener("click",()=>{chatRoom=b.dataset.room;document.querySelectorAll("[data-room]").forEach(x=>x.classList.toggle("active",x===b));const info=roomNames[chatRoom];document.getElementById("chat-room-title").textContent=info[0];document.getElementById("chat-room-tag").textContent=info[1];document.getElementById("chat-room-description").textContent=info[2];loadChat();}));
+document.querySelectorAll("[data-room]").forEach(b=>b.addEventListener("click",()=>showChatRoom(b.dataset.room)));
 document.getElementById("chat-form").addEventListener("submit",async e=>{e.preventDefault();const input=document.getElementById("chat-input"),message=input.value.trim(),foot=document.getElementById("chat-footnote");if(!chatUser||!message)return;const name=chatUser.user_metadata?.full_name||chatUser.user_metadata?.name||chatUser.email?.split("@")[0]||"Member";const {error}=await chatSupabase.from("web_chat_messages").insert({room:chatRoom,user_id:chatUser.id,display_name:name,message});if(error){foot.textContent="Gagal mengirim: "+error.message;return;}input.value="";await loadChat();});
 document.getElementById("member-show-password").addEventListener("change", (event) => {
   document.getElementById("member-password").type = event.target.checked ? "text" : "password";
