@@ -236,7 +236,9 @@ header nav.wrap{display:flex;align-items:center;justify-content:space-between;ga
 .grid,.product-grid,.stats,.quick-links{min-width:0}
 .product,.card,.panel{max-width:100%;min-width:0}
 input,textarea,select{max-width:100%;font:inherit}
-.reset-local-data{position:fixed;right:16px;bottom:16px;z-index:900;border:1px solid #a9323e;background:linear-gradient(135deg,#2a090d,#111);color:#fff;border-radius:999px;padding:11px 16px;box-shadow:0 8px 28px #0009,0 0 18px #b51e2b33;font-weight:800;font-size:12px;letter-spacing:.04em;cursor:pointer}
+.reset-local-data{position:fixed;left:16px;right:auto;bottom:16px;z-index:900;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #71303a;background:linear-gradient(135deg,#171719f5,#0c0c0df5);color:#e9dfe0;border-radius:12px;padding:10px 14px;box-shadow:0 8px 28px #0009,0 0 16px #b51e2b20;font-weight:800;font-size:11px;letter-spacing:.04em;cursor:pointer;backdrop-filter:blur(12px);transition:border-color .18s ease,background .18s ease,transform .18s ease;opacity:.88}
+.reset-local-data::before{content:"↻";display:inline-grid;place-items:center;width:20px;height:20px;border-radius:6px;background:#3a1117;color:#ff6570;font-size:16px;line-height:1}
+.reset-local-data:hover,.reset-local-data:focus-visible{opacity:1;border-color:#e64a58;background:linear-gradient(135deg,#2a0d11f5,#101010f5);transform:translateY(-2px);outline:2px solid #ff596633;outline-offset:2px}
 .reset-local-data:hover,.reset-local-data:focus-visible{outline:2px solid #ff5966;outline-offset:3px}
 @media (max-width:900px){
  header nav.wrap{align-items:flex-start}
@@ -258,7 +260,7 @@ input,textarea,select{max-width:100%;font:inherit}
  .product-detail-panel{padding:18px!important}
  .product-detail-actions{flex-direction:column}
  .product-detail-actions .btn{width:100%;justify-content:center;text-align:center}
- .reset-local-data{right:10px;bottom:10px;padding:10px 13px;font-size:11px}
+ .reset-local-data{left:10px;right:auto;bottom:10px;padding:8px 10px;font-size:10px}
 }
 @media (max-width:380px){
  .wrap{width:calc(100% - 20px)}
