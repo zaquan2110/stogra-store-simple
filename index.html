@@ -862,8 +862,7 @@ async function muatProdukStogra() {
     card.tabIndex = 0;
     card.setAttribute("role", "button");
     card.setAttribute("aria-label", "Lihat detail " + (product.name || "produk"));
-    card.addEventListener("click", (event) => {
-      if (event.target.closest("a,button")) return;
+    card.addEventListener("click", () => {
       bukaDetailProduk(product);
     });
     card.addEventListener("keydown", (event) => {
@@ -897,9 +896,13 @@ async function muatProdukStogra() {
     ));
 
     const link = buatElemen("a", "btn", "Tanya Staff →");
-    link.href = "https://discord.gg/uwKk9znZem";
-    link.target = "_blank";
-    link.rel = "noopener";
+    link.href = "#produk";
+    link.removeAttribute("target");
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      bukaDetailProduk(product);
+    });
     card.appendChild(link);
 
     grid.appendChild(card);
