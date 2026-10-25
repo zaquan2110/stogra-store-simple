@@ -293,7 +293,7 @@ function buatElemen(tag, className, text) {
 }
 
 
-function bukaScreen(nama) {
+function bukaScreen(nama, updateUrl = true) {
   document.querySelectorAll(".screen").forEach((screen) => {
     screen.classList.toggle("active", screen.id === "screen-" + nama);
   });
@@ -305,7 +305,9 @@ function bukaScreen(nama) {
   });
   if (nama === "produk" && !window.__stograProductsLoaded) muatProdukStogra();
   window.scrollTo({ top: 0, behavior: "smooth" });
-  history.replaceState(null, "", "#" + nama);
+  // Jangan menimpa URL saat halaman pertama kali dibuka: OAuth Google dapat
+  // mengembalikan ?code=... yang harus dibaca Supabase untuk membuat sesi.
+  if (updateUrl) history.replaceState(null, "", "#" + nama);
 }
 
 document.querySelectorAll("[data-screen]").forEach((button) => {
@@ -436,7 +438,7 @@ async function muatProdukStogra() {
 }
 
 const initialScreen = location.hash.replace("#", "");
-bukaScreen(["lobby","produk","informasi","komunikasi","pengumuman","profil","admin"].includes(initialScreen) ? initialScreen : "lobby");
+bukaScreen(["lobby","produk","informasi","komunikasi","pengumuman","profil","admin"].includes(initialScreen) ? initialScreen : "lobby", false);
 muatProdukStogra();
 </script>
 </body>
