@@ -82,7 +82,20 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
 .profile-card{max-width:520px;margin:25px auto;text-align:center;padding:32px;border:1px solid #652028;border-radius:18px;background:linear-gradient(145deg,#23090d,#101010)}
 .profile-logo{width:88px;height:88px;object-fit:cover;border-radius:20px;margin-bottom:18px;border:1px solid #652028}
 .profile-card h2{margin:10px 0}.profile-status{margin:20px 0;padding:12px;background:#080808;border:1px solid #292929;border-radius:9px;color:#bbb;font-size:13px}
-.profile-card button{margin:4px;justify-content:center;min-width:180px}[hidden]{display:none!important}.profile-actions{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;margin-top:18px}.profile-actions .btn{margin:0}.profile-account{display:none;align-items:center;gap:12px;justify-content:center;margin:18px 0 8px;text-align:left}.profile-account.visible{display:flex}.profile-avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;border:1px solid #652028;background:#171010}.profile-account strong,.profile-account span{display:block;overflow-wrap:anywhere}.profile-account span{font-size:12px;color:#aaa;margin-top:4px}
+.profile-card button{margin:4px;justify-content:center;min-width:180px}
+.member-login-form{display:grid;gap:9px;text-align:left;margin:22px auto 12px;max-width:380px}
+.member-login-form label{font-size:13px;font-weight:750;color:#ddd;margin-top:5px}
+.member-login-form input{width:100%;padding:13px 14px;border:1px solid #3b3030;border-radius:9px;background:#090909;color:#fff;font:inherit;outline:none}
+.member-login-form input:focus{border-color:#ff4652;box-shadow:0 0 0 2px #ff303b18}
+.password-row{display:flex;gap:9px;align-items:center}
+.password-row input{flex:1;min-width:0}
+.password-toggle{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:#bbb;cursor:pointer;user-select:none}
+.password-toggle input{width:auto;accent-color:#ff303b}
+.member-auth-message{font-size:12px;line-height:1.6;color:#ff9ca2;min-height:18px;margin:2px 0}
+.member-login-form .btn{width:100%;margin:0}
+.member-login-divider{display:flex;align-items:center;gap:10px;color:#777;font-size:11px;margin:18px auto;max-width:380px}
+.member-login-divider:before,.member-login-divider:after{content:"";height:1px;background:#ffffff18;flex:1}
+[hidden]{display:none!important}.profile-actions{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;margin-top:18px}.profile-actions .btn{margin:0}.profile-account{display:none;align-items:center;gap:12px;justify-content:center;margin:18px 0 8px;text-align:left}.profile-account.visible{display:flex}.profile-avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;border:1px solid #652028;background:#171010}.profile-account strong,.profile-account span{display:block;overflow-wrap:anywhere}.profile-account span{font-size:12px;color:#aaa;margin-top:4px}
 @media(max-width:760px){.chat-layout{grid-template-columns:1fr}.chat-sidebar{border-right:0;border-bottom:1px solid #302126}.room-button{padding:9px}.chat-panel{min-height:450px}}
 
 .admin-nav{border-color:#652028;color:#ff6871!important;background:#170b0d}
@@ -226,7 +239,17 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
   </section>
 
   <section id="screen-profil" class="screen section wrap">
-    <div class="profile-card"><img class="profile-logo" src="https://cdn.discordapp.com/attachments/1530127542785151157/1534573785993314416/file_000000008844820686dddd1548743b8b.jpg" alt="Logo STOGRA STORE"><div class="eyebrow">MEMBER AREA</div><h2>Profil <span class="red">Akun</span></h2><p class="sub">Jelajahi katalog tanpa login, atau masuk dengan Google maupun Discord untuk menggunakan chat web.</p><div id="profile-status" class="profile-status">Memeriksa sesi akun...</div><div id="profile-account" class="profile-account"><img id="profile-avatar" class="profile-avatar" alt="Foto profil akun"><div><strong id="profile-name">Member</strong><span id="profile-email"></span></div></div><div class="profile-actions" id="profile-login-actions"><button class="btn primary" id="google-login">Lanjutkan dengan Google</button><button class="btn" id="discord-login">Lanjutkan dengan Discord</button></div><div class="profile-actions" id="profile-user-actions" hidden><button class="btn" id="staff-help">Bantuan Staff/Admin ↗</button><button class="btn" id="google-logout" hidden>Logout</button></div><p class="note">Status akun diperbarui otomatis setelah sesi login berhasil diverifikasi.</p></div>
+    <div class="profile-card"><img class="profile-logo" src="https://cdn.discordapp.com/attachments/1530127542785151157/1534573785993314416/file_000000008844820686dddd1548743b8b.jpg" alt="Logo STOGRA STORE"><div class="eyebrow">MEMBER AREA</div><h2>Profil <span class="red">Akun</span></h2><p class="sub">Jelajahi katalog tanpa login, atau masuk dengan Google maupun Discord untuk menggunakan chat web.</p><div id="profile-status" class="profile-status">Memeriksa sesi akun...</div>
+      <form id="member-login-form" class="member-login-form">
+        <label for="member-email">Nama Gmail / Email</label>
+        <input id="member-email" name="email" type="email" autocomplete="email" placeholder="nama@gmail.com" required>
+        <label for="member-password">Kata sandi akun STOGRA</label>
+        <div class="password-row"><input id="member-password" name="password" type="password" autocomplete="current-password" placeholder="Masukkan kata sandi" required><label class="password-toggle"><input id="member-show-password" type="checkbox"> Lihat sandi</label></div>
+        <button class="btn primary" id="member-email-login" type="submit">Masuk dengan Email →</button>
+        <p id="member-auth-message" class="member-auth-message" role="status" aria-live="polite"></p>
+      </form>
+      <div class="member-login-divider">ATAU MASUK DENGAN</div>
+      <div id="profile-account" class="profile-account"><img id="profile-avatar" class="profile-avatar" alt="Foto profil akun"><div><strong id="profile-name">Member</strong><span id="profile-email"></span></div></div><div class="profile-actions" id="profile-login-actions"><button class="btn primary" id="google-login">Lanjutkan dengan Google</button><button class="btn" id="discord-login">Lanjutkan dengan Discord</button></div><div class="profile-actions" id="profile-user-actions" hidden><button class="btn" id="staff-help">Bantuan Staff/Admin ↗</button><button class="btn" id="google-logout" hidden>Logout</button></div><p class="note">Status akun diperbarui otomatis setelah sesi login berhasil diverifikasi.</p></div>
   </section>
 
   <section id="screen-admin" class="screen section wrap">
@@ -367,6 +390,35 @@ async function loadChat(){
 }
 document.querySelectorAll("[data-room]").forEach(b=>b.addEventListener("click",()=>{chatRoom=b.dataset.room;document.querySelectorAll("[data-room]").forEach(x=>x.classList.toggle("active",x===b));const info=roomNames[chatRoom];document.getElementById("chat-room-title").textContent=info[0];document.getElementById("chat-room-tag").textContent=info[1];document.getElementById("chat-room-description").textContent=info[2];loadChat();}));
 document.getElementById("chat-form").addEventListener("submit",async e=>{e.preventDefault();const input=document.getElementById("chat-input"),message=input.value.trim(),foot=document.getElementById("chat-footnote");if(!chatUser||!message)return;const name=chatUser.user_metadata?.full_name||chatUser.user_metadata?.name||chatUser.email?.split("@")[0]||"Member";const {error}=await chatSupabase.from("web_chat_messages").insert({room:chatRoom,user_id:chatUser.id,display_name:name,message});if(error){foot.textContent="Gagal mengirim: "+error.message;return;}input.value="";await loadChat();});
+document.getElementById("member-show-password").addEventListener("change", (event) => {
+  document.getElementById("member-password").type = event.target.checked ? "text" : "password";
+});
+document.getElementById("member-login-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const email = document.getElementById("member-email").value.trim();
+  const password = document.getElementById("member-password").value;
+  const submit = document.getElementById("member-email-login");
+  const status = document.getElementById("member-auth-message");
+  const oauthButtons = [document.getElementById("google-login"), document.getElementById("discord-login")];
+  submit.disabled = true;
+  oauthButtons.forEach(button => button.disabled = true);
+  status.textContent = "Memverifikasi email dan kata sandi...";
+  try {
+    const { data, error } = await chatSupabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    authStateReady = true;
+    setChatUser(data?.user || data?.session?.user || null);
+    status.textContent = "Login berhasil.";
+    document.getElementById("member-password").value = "";
+    bukaScreen("profil");
+  } catch (error) {
+    // Avoid exposing detailed auth internals or account enumeration hints.
+    status.textContent = "Login gagal. Periksa email dan kata sandi, atau pastikan akun email sudah terdaftar di STOGRA STORE.";
+  } finally {
+    submit.disabled = false;
+    oauthButtons.forEach(button => button.disabled = false);
+  }
+});
 document.getElementById("google-login").addEventListener("click",async()=>{const buttons=[document.getElementById("google-login"),document.getElementById("discord-login")];buttons.forEach(b=>b.disabled=true);document.getElementById("profile-status").textContent="Mengalihkan ke Google...";const {error}=await chatSupabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname+"#profil"}});if(error){document.getElementById("profile-status").textContent="Login Google gagal: "+error.message;buttons.forEach(b=>b.disabled=false);}});
 document.getElementById("discord-login").addEventListener("click",async()=>{const buttons=[document.getElementById("google-login"),document.getElementById("discord-login")];buttons.forEach(b=>b.disabled=true);document.getElementById("profile-status").textContent="Mengalihkan ke Discord...";const {error}=await chatSupabase.auth.signInWithOAuth({provider:"discord",options:{redirectTo:location.origin+location.pathname+"#profil"}});if(error){document.getElementById("profile-status").textContent="Login Discord gagal: "+error.message;buttons.forEach(b=>b.disabled=false);}});
 document.getElementById("staff-help").addEventListener("click",()=>window.open("https://discord.gg/uwKk9znZem","_blank","noopener,noreferrer"));
