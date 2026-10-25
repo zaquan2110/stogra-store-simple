@@ -462,34 +462,8 @@ document.getElementById("member-login-form").addEventListener("submit", async (e
     oauthButtons.forEach(button => button.disabled = false);
   }
 });
-document.getElementById("member-show-password").addEventListener("change", (event) => {document.getElementById("member-show-password").addEventListener("change", (event) => {
+document.getElementById("member-show-password").addEventListener("change", (event) => {
   document.getElementById("member-password").type = event.target.checked ? "text" : "password";
-});
-document.getElementById("member-login-form").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const email = document.getElementById("member-email").value.trim();
-  const password = document.getElementById("member-password").value;
-  const submit = document.getElementById("member-email-login");
-  const status = document.getElementById("member-auth-message");
-  const oauthButtons = [document.getElementById("google-login"), document.getElementById("discord-login")];
-  submit.disabled = true;
-  oauthButtons.forEach(button => button.disabled = true);
-  status.textContent = "Memverifikasi email dan kata sandi...";
-  try {
-    const { data, error } = await chatSupabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-    authStateReady = true;
-    setChatUser(data?.user || data?.session?.user || null);
-    status.textContent = "Login berhasil.";
-    document.getElementById("member-password").value = "";
-    bukaScreen("profil");
-  } catch (error) {
-    // Avoid exposing detailed auth internals or account enumeration hints.
-    status.textContent = "Login gagal. Periksa email dan kata sandi, atau pastikan akun email sudah terdaftar di STOGRA STORE.";
-  } finally {
-    submit.disabled = false;
-    oauthButtons.forEach(button => button.disabled = false);
-  }
 });
 document.getElementById("google-login").addEventListener("click",async()=>{const buttons=[document.getElementById("google-login"),document.getElementById("discord-login")];buttons.forEach(b=>b.disabled=true);document.getElementById("profile-status").textContent="Mengalihkan ke Google...";const {error}=await chatSupabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname+"#profil"}});if(error){document.getElementById("profile-status").textContent="Login Google gagal: "+error.message;buttons.forEach(b=>b.disabled=false);}});
 document.getElementById("discord-login").addEventListener("click",async()=>{const buttons=[document.getElementById("google-login"),document.getElementById("discord-login")];buttons.forEach(b=>b.disabled=true);document.getElementById("profile-status").textContent="Mengalihkan ke Discord...";const {error}=await chatSupabase.auth.signInWithOAuth({provider:"discord",options:{redirectTo:location.origin+location.pathname+"#profil"}});if(error){document.getElementById("profile-status").textContent="Login Discord gagal: "+error.message;buttons.forEach(b=>b.disabled=false);}});
