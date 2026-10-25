@@ -211,7 +211,14 @@ body.auth-modal-open{overflow:hidden}
  #header-local-clock{font-size:15px;min-width:65px}
  .screen-nav{justify-content:flex-end}
 }
-@media(max-width:560px){}\n</style>
+@media(max-width:560px){}\n
+.product{cursor:pointer}.product:focus-visible{outline:2px solid #ff303b;outline-offset:3px}
+.product-detail-overlay{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:18px;background:#000c;backdrop-filter:blur(7px)}
+.product-detail-overlay.show{display:flex}.product-detail-panel{position:relative;width:min(760px,100%);max-height:82vh;overflow-y:auto;border:1px solid #8b2932;border-radius:18px;background:linear-gradient(145deg,#21090c,#101010 70%);box-shadow:0 25px 100px #000d;padding:26px}
+.product-detail-close{position:sticky;top:0;float:right;z-index:2;border:1px solid #652028;background:#1a0b0d;color:#fff;border-radius:9px;padding:9px 13px;font-weight:900;cursor:pointer}
+.product-detail-image{width:100%;max-height:300px;object-fit:contain;border-radius:12px;background:#080808;margin:12px 0 18px}.product-detail-description{color:#ccc;line-height:1.85;white-space:pre-wrap;overflow-wrap:anywhere}.product-detail-price{font-size:24px;font-weight:950;color:#fff}.product-detail-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+@media(max-width:560px){.product-detail-overlay{padding:10px}.product-detail-panel{padding:17px;max-height:88vh}.product-detail-image{max-height:220px}}
+</style>
 </head>
 
 <body>
@@ -790,6 +797,22 @@ async function initializeAuth(){
 }
 initializeAuth();
 
+const productDetailOverlay = document.getElementById("product-detail-overlay");
+function tutupDetailProduk(){productDetailOverlay.classList.remove("show");document.body.classList.remove("auth-modal-open");}
+document.getElementById("product-detail-close").addEventListener("click",tutupDetailProduk);
+document.getElementById("product-detail-close-bottom").addEventListener("click",tutupDetailProduk);
+productDetailOverlay.addEventListener("click",e=>{if(e.target===productDetailOverlay)tutupDetailProduk();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&productDetailOverlay.classList.contains("show"))tutupDetailProduk();});
+function bukaDetailProduk(product){
+ document.getElementById("product-detail-category").textContent=product.category||"PRODUK";
+ document.getElementById("product-detail-title").textContent=product.name||"Produk STOGRA STORE";
+ const price=Number(product.price);
+ document.getElementById("product-detail-price").textContent=Number.isFinite(price)?new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(price):"Hubungi staff untuk harga";
+ document.getElementById("product-detail-description").textContent=product.description||"Belum ada deskripsi detail. Hubungi staff untuk informasi lebih lanjut.";
+ const img=document.getElementById("product-detail-image");
+ if(product.image_url){img.src=product.image_url;img.alt=product.name||"Foto produk";img.hidden=false;img.onerror=()=>{img.hidden=true;};}else{img.removeAttribute("src");img.hidden=true;}
+ productDetailOverlay.classList.add("show");document.body.classList.add("auth-modal-open");document.getElementById("product-detail-close").focus();
+}
 async function muatProdukStogra() {
   if (!window.supabase || SUPABASE_PUBLISHABLE_KEY === "GANTI_DENGAN_PUBLISHABLE_KEY_KAMU") {
     message.textContent = "Koneksi belum siap. Periksa Publishable key Supabase di konfigurasi website.";
@@ -836,6 +859,16 @@ async function muatProdukStogra() {
 
   data.forEach((product) => {
     const card = buatElemen("article", "product");
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-label", "Lihat detail " + (product.name || "produk"));
+    card.addEventListener("click", (event) => {
+      if (event.target.closest("a,button")) return;
+      bukaDetailProduk(product);
+    });
+    card.addEventListener("keydown", (event) => {
+      if (event.target === card && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); bukaDetailProduk(product); }
+    });
     card.appendChild(buatElemen("div", "tag", product.category || "PRODUK"));
 
     if (product.image_url) {
@@ -877,5 +910,17 @@ const initialScreen = location.hash.replace("#", "");
 bukaScreen(["lobby","produk","informasi","komunikasi","pengumuman","profil","admin","pengaturan","media"].includes(initialScreen) ? initialScreen : "lobby", false);
 muatProdukStogra();
 </script>
+
+<div class="product-detail-overlay" id="product-detail-overlay" role="dialog" aria-modal="true" aria-labelledby="product-detail-title">
+  <section class="product-detail-panel">
+    <button type="button" class="product-detail-close" id="product-detail-close" aria-label="Tutup detail produk">✕ Tutup</button>
+    <div class="tag" id="product-detail-category">DETAIL PRODUK</div>
+    <h2 id="product-detail-title">Detail Produk</h2>
+    <img id="product-detail-image" class="product-detail-image" alt="" hidden>
+    <p class="product-detail-price" id="product-detail-price"></p>
+    <div class="product-detail-description" id="product-detail-description"></div>
+    <div class="product-detail-actions"><a class="btn primary" id="product-detail-order" href="https://discord.gg/uwKk9znZem" target="_blank" rel="noopener">Tanya Staff di Discord →</a><button type="button" class="btn" id="product-detail-close-bottom">Tutup halaman produk</button></div>
+  </section>
+</div>
 </body>
 </html>
