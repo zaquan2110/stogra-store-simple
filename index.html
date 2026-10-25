@@ -799,6 +799,28 @@ async function initializeAuth(){
 initializeAuth();
 
 const productDetailOverlay = document.getElementById("product-detail-overlay");
+// Delegated click handler: keeps product opening reliable even if individual card handlers fail.
+document.addEventListener("click", function(event) {
+  const card = event.target.closest("#product-grid .product");
+  if (!card) return;
+  const buttonOrLink = event.target.closest("a,button");
+  if (buttonOrLink && !buttonOrLink.classList.contains("product-open-label")) {
+    if (buttonOrLink.tagName === "A" && buttonOrLink.textContent.includes("Tanya Staff")) {
+      event.preventDefault();
+      event.stopPropagation();
+    } else if (buttonOrLink.classList.contains("product-open-label")) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }
+  const title = card.querySelector("h3")?.textContent || "";
+  const product = (window.__stograProductItems || []).find(item => (item.name || "Produk") === title);
+  if (product) {
+    event.preventDefault();
+    event.stopPropagation();
+    bukaDetailProduk(product);
+  }
+}, true);
 function tutupDetailProduk(){productDetailOverlay.classList.remove("show");productDetailOverlay.style.display="none";productDetailOverlay.setAttribute("aria-hidden","true");document.body.classList.remove("auth-modal-open");}
 document.getElementById("product-detail-close").addEventListener("click",tutupDetailProduk);
 document.getElementById("product-detail-close-bottom").addEventListener("click",tutupDetailProduk);
@@ -848,6 +870,7 @@ async function muatProdukStogra() {
   }
 
   window.__stograProductsLoaded = true;
+  window.__stograProductItems = data || [];
   grid.replaceChildren();
   document.getElementById("stat-products").textContent = data ? data.length : 0;
 
