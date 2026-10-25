@@ -213,11 +213,12 @@ body.auth-modal-open{overflow:hidden}
 }
 @media(max-width:560px){}\n
 .product{cursor:pointer}.product:focus-visible{outline:2px solid #ff303b;outline-offset:3px}
+.product-open-label{display:inline-flex;margin-top:8px;padding:9px 12px;border:1px solid #a82c37;border-radius:9px;background:#260b0f;color:#ff6871;font-size:12px;font-weight:900;letter-spacing:.04em}.product{cursor:pointer;transition:border-color .18s,transform .18s}.product:hover{border-color:#ff303b;transform:translateY(-3px)}
 .product-detail-overlay{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:18px;background:#000c;backdrop-filter:blur(7px)}
-.product-detail-overlay.show{display:flex}.product-detail-panel{position:relative;width:min(760px,100%);max-height:82vh;overflow-y:auto;border:1px solid #8b2932;border-radius:18px;background:linear-gradient(145deg,#21090c,#101010 70%);box-shadow:0 25px 100px #000d;padding:26px}
+.product-detail-overlay.show{display:flex;justify-content:flex-end;padding:0;background:#000b}.product-detail-panel{position:relative;width:min(560px,50vw);height:100%;max-height:100vh;overflow-y:auto;border:1px solid #8b2932;border-right:0;border-top:0;border-bottom:0;border-radius:18px 0 0 18px;background:linear-gradient(145deg,#21090c,#101010 70%);box-shadow:-25px 0 100px #000d;padding:30px;animation:productPanelIn .22s ease-out}@keyframes productPanelIn{from{transform:translateX(35px);opacity:.5}to{transform:translateX(0);opacity:1}}
 .product-detail-close{position:sticky;top:0;float:right;z-index:2;border:1px solid #652028;background:#1a0b0d;color:#fff;border-radius:9px;padding:9px 13px;font-weight:900;cursor:pointer}
 .product-detail-image{width:100%;max-height:300px;object-fit:contain;border-radius:12px;background:#080808;margin:12px 0 18px}.product-detail-description{color:#ccc;line-height:1.85;white-space:pre-wrap;overflow-wrap:anywhere}.product-detail-price{font-size:24px;font-weight:950;color:#fff}.product-detail-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
-@media(max-width:560px){.product-detail-overlay{padding:10px}.product-detail-panel{padding:17px;max-height:88vh}.product-detail-image{max-height:220px}}
+@media(max-width:760px){.product-detail-overlay{padding:0}.product-detail-panel{width:100%;max-width:none;height:100%;max-height:100vh;border-radius:0;padding:22px}.product-detail-image{max-height:220px}}
 </style>
 </head>
 
@@ -881,6 +882,7 @@ async function muatProdukStogra() {
 
     card.appendChild(buatElemen("h3", "", product.name || "Produk"));
     card.appendChild(buatElemen("p", "", product.description || "Hubungi staff untuk informasi produk."));
+    card.appendChild(buatElemen("span", "product-open-label", "BUKA DETAIL PRODUK ↗"));
 
     const price = Number(product.price);
     card.appendChild(buatElemen(
