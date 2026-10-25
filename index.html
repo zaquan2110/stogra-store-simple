@@ -52,6 +52,39 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
 .note{font-size:12px;color:#888;margin-top:22px}
 #catalog-message{padding:18px;border:1px solid #292929;border-radius:10px;color:#aaa;line-height:1.7}
 
+
+.hero-logo{width:72px;height:72px;object-fit:cover;border-radius:16px;border:1px solid #ff303b;box-shadow:0 0 25px #ff303b30;margin-bottom:14px}
+.mascot-row{height:130px;display:flex;align-items:end;justify-content:center;gap:18px;overflow:hidden;margin:12px 0 4px}
+.mascot-row img{height:130px;max-width:48%;object-fit:contain;object-position:bottom}
+.chat-layout{display:grid;grid-template-columns:245px minmax(0,1fr);min-height:540px;border:1px solid #382126;border-radius:16px;overflow:hidden;background:#0c0c0c}
+.chat-sidebar{padding:15px;background:#101010;border-right:1px solid #302126;display:flex;flex-direction:column;gap:8px}
+.chat-brand{display:flex;align-items:center;gap:10px;padding:5px 3px 16px;border-bottom:1px solid #ffffff14;margin-bottom:6px}
+.chat-brand img{width:42px;height:42px;object-fit:cover;border-radius:10px}
+.chat-brand strong,.chat-brand span{display:block}.chat-brand strong{font-size:12px;letter-spacing:.08em}.chat-brand span{font-size:9px;color:#ff6871;margin-top:5px}
+.room-button{display:flex;gap:11px;align-items:center;text-align:left;border:1px solid transparent;border-radius:9px;padding:12px;background:transparent;color:#eee;cursor:pointer}
+.room-button>span{font-size:21px;color:#ff5964;width:24px;text-align:center}
+.room-button strong,.room-button small{display:block}.room-button strong{font-size:12px}.room-button small{font-size:11px;color:#888;margin-top:5px}
+.room-button.active,.room-button:hover{background:#251014;border-color:#652028}
+.chat-sidebar-foot{font-size:11px;color:#888;line-height:1.6;margin-top:auto;padding:14px 4px 2px;border-top:1px solid #ffffff14}
+.chat-panel{display:flex;flex-direction:column;min-width:0;min-height:540px}
+.chat-room-head{padding:20px;border-bottom:1px solid #282020;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.chat-room-head h3{margin:7px 0 4px}.chat-room-head p{margin:0;color:#999;font-size:12px;line-height:1.6}
+.online-pill{font-size:9px;letter-spacing:.1em;color:#ff6871;border:1px solid #652028;border-radius:20px;padding:7px 9px;white-space:nowrap}
+.chat-messages{flex:1;min-height:280px;max-height:460px;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
+.chat-empty{margin:auto;text-align:center;max-width:300px;color:#888;line-height:1.7}.chat-empty strong{display:block;color:#eee;margin-top:10px}.chat-empty p{font-size:12px}
+.chat-compose{display:flex;gap:10px;align-items:end;padding:14px;border-top:1px solid #282020}
+.chat-compose textarea{flex:1;resize:vertical;min-width:0;background:#111;border:1px solid #393030;color:#fff;border-radius:9px;padding:12px;font:inherit}
+.chat-compose button:disabled,.chat-compose textarea:disabled{opacity:.45;cursor:not-allowed}
+.chat-footnote{padding:0 16px 14px;font-size:11px;color:#777}
+.chat-bubble{max-width:85%;align-self:flex-start;padding:11px 13px;border:1px solid #302323;border-radius:12px;background:#171313;overflow-wrap:anywhere}
+.chat-bubble.mine{align-self:flex-end;background:#2a0d12;border-color:#652028}
+.chat-bubble strong{font-size:11px;color:#ff858c}.chat-bubble p{margin:6px 0;color:#eee;white-space:pre-wrap;line-height:1.6;font-size:13px}.chat-bubble small{font-size:10px;color:#888}
+.profile-card{max-width:520px;margin:25px auto;text-align:center;padding:32px;border:1px solid #652028;border-radius:18px;background:linear-gradient(145deg,#23090d,#101010)}
+.profile-logo{width:88px;height:88px;object-fit:cover;border-radius:20px;margin-bottom:18px;border:1px solid #652028}
+.profile-card h2{margin:10px 0}.profile-status{margin:20px 0;padding:12px;background:#080808;border:1px solid #292929;border-radius:9px;color:#bbb;font-size:13px}
+.profile-card button{margin:4px}
+@media(max-width:760px){.chat-layout{grid-template-columns:1fr}.chat-sidebar{border-right:0;border-bottom:1px solid #302126}.room-button{padding:9px}.chat-panel{min-height:450px}}
+
 .admin-nav{border-color:#652028;color:#ff6871!important;background:#170b0d}
 .announcement-list{display:grid;gap:15px}
 .announcement-card{padding:22px;border:1px solid #292929;border-radius:13px;background:linear-gradient(160deg,#151515,#0d0d0d)}
@@ -122,6 +155,7 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
       <button class="nav-item" data-screen="informasi">Informasi</button>
       <button class="nav-item" data-screen="komunikasi">Komunikasi</button>
       <button class="nav-item" data-screen="pengumuman">Pengumuman</button>
+      <button class="nav-item" data-screen="profil">Profil Akun</button>
       <button class="nav-item admin-nav" data-screen="admin">Login Admin ↗</button>
     </div>
   </nav>
@@ -145,7 +179,7 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
         </div>
       </div>
       <aside class="hero-card">
-        <div class="eyebrow">WELCOME TO</div><h2>STOGRA STORE</h2>
+        <img class="hero-logo" src="https://cdn.discordapp.com/attachments/1530127542785151157/1534573785993314416/file_000000008844820686dddd1548743b8b.jpg" alt="Logo STOGRA STORE"><div class="eyebrow">WELCOME TO</div><h2>STOGRA STORE</h2><div class="mascot-row"><img src="https://cdn.discordapp.com/attachments/1530127542785151157/1560509520524873748/Smirking_Red-Eyed_Streetwear_Character-removebg-preview.png" alt="Maskot cowok STOGRA"><img src="https://cdn.discordapp.com/attachments/1530127542785151157/1560472429346824292/Cyberpunk_Tactical_Streetwear_Portrait.png" alt="Maskot cewek STOGRA"></div>
         <p>Build smarter. Create better. Level up your Roblox experience.</p>
         <div class="chips"><div class="chip">SCRIPT</div><div class="chip">UI DESIGN</div><div class="chip">MAP</div></div>
         <div class="lobby-status"><span class="status-dot"></span> Katalog terhubung ke database</div>
@@ -191,6 +225,10 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
     <div class="notice"><strong>Catatan</strong><p>Pengumuman pada tahap ini masih berupa konten awal di website. Pengelolaan pengumuman melalui panel admin akan diaktifkan setelah autentikasi dan izin database selesai dikonfigurasi.</p></div>
   </section>
 
+  <section id="screen-profil" class="screen section wrap">
+    <div class="profile-card"><img class="profile-logo" src="https://cdn.discordapp.com/attachments/1530127542785151157/1534573785993314416/file_000000008844820686dddd1548743b8b.jpg" alt="Logo STOGRA STORE"><div class="eyebrow">MEMBER AREA</div><h2>Profil <span class="red">Akun</span></h2><p class="sub">Kamu boleh menjelajahi katalog tanpa login. Login Google diperlukan untuk menggunakan chat web.</p><div id="profile-status" class="profile-status">Memeriksa sesi akun...</div><button class="btn primary" id="google-login">Lanjutkan dengan Google</button><button class="btn" id="google-logout" hidden>Logout</button><p class="note">Google login perlu diaktifkan di Supabase Authentication sebelum digunakan.</p></div>
+  </section>
+
   <section id="screen-admin" class="screen section wrap">
     <div class="admin-login-wrap">
       <div class="admin-emblem">S</div>
@@ -211,13 +249,23 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
   </section>
 
   <section id="screen-komunikasi" class="screen section wrap">
-    <div class="section-head"><small>COMMUNICATION HUB</small><h2>Ruang Komunikasi</h2><p class="sub">Pilih jalur komunikasi sesuai kebutuhanmu.</p></div>
-    <div class="grid communication-grid">
-      <article class="contact-card"><div class="contact-symbol">◉</div><div class="tag">CUSTOMER SUPPORT</div><h3>Chat Staff di Discord</h3><p>Untuk pertanyaan produk, konsultasi, pemesanan, dan bantuan pesanan. Kamu akan diarahkan ke server Discord resmi STOGRA STORE.</p><a class="btn primary" href="https://discord.gg/uwKk9znZem" target="_blank" rel="noopener">Buka Discord ↗</a></article>
-      <article class="contact-card"><div class="contact-symbol">ⓘ</div><div class="tag">SELF SERVICE</div><h3>Informasi & FAQ</h3><p>Cari tahu cara order, informasi harga, dan proses pemesanan tanpa harus bertanya berulang kali.</p><button class="btn" data-go="informasi">Buka Pusat Informasi →</button></article>
-      <article class="contact-card"><div class="contact-symbol">▦</div><div class="tag">PRODUCT ASSISTANCE</div><h3>Tanya Produk</h3><p>Belum yakin produk mana yang cocok? Lihat daftar produk dan catat nama produk sebelum menghubungi staff.</p><button class="btn" data-go="produk">Pilih Produk →</button></article>
+    <div class="section-head"><small>COMMUNICATION HUB</small><h2>Ruang Komunikasi</h2><p class="sub">Semua chat terkumpul di sini. Jelajahi tanpa login; login Google diperlukan untuk mengirim pesan.</p></div>
+    <div class="chat-layout">
+      <aside class="chat-sidebar">
+        <div class="chat-brand"><img src="https://cdn.discordapp.com/attachments/1530127542785151157/1534573785993314416/file_000000008844820686dddd1548743b8b.jpg" alt="Logo STOGRA"><div><strong>STOGRA CHAT</strong><span>COMMUNITY SUPPORT</span></div></div>
+        <button class="room-button active" data-room="lobby"><span>⌂</span><div><strong>Lobby</strong><small>Obrolan umum</small></div></button>
+        <button class="room-button" data-room="support"><span>◉</span><div><strong>Customer Support</strong><small>Bantuan dan pesanan</small></div></button>
+        <button class="room-button" data-room="informasi"><span>ⓘ</span><div><strong>Informasi</strong><small>Tanya informasi toko</small></div></button>
+        <button class="room-button" data-room="produk"><span>▦</span><div><strong>Diskusi Produk</strong><small>Diskusi produk</small></div></button>
+        <div class="chat-sidebar-foot" id="chat-user-state">Login Google diperlukan untuk mengirim pesan.</div>
+      </aside>
+      <section class="chat-panel">
+        <div class="chat-room-head"><div><div class="tag" id="chat-room-tag">PUBLIC ROOM</div><h3 id="chat-room-title">Lobby</h3><p id="chat-room-description">Sapa komunitas STOGRA STORE.</p></div><span class="online-pill">● WEB CHAT</span></div>
+        <div class="chat-messages" id="chat-messages" aria-live="polite"><div class="chat-empty"><strong>STOGRA Chat</strong><p>Login dengan Google untuk memulai percakapan.</p></div></div>
+        <form id="chat-form" class="chat-compose"><textarea id="chat-input" rows="2" maxlength="1500" placeholder="Tulis pesan..." disabled required></textarea><button class="btn primary" id="chat-send" type="submit" disabled>Kirim ↗</button></form>
+        <div class="chat-footnote" id="chat-footnote">Chat membutuhkan setup database dan login Google.</div>
+      </section>
     </div>
-    <div class="notice"><strong>Catatan komunikasi</strong><p>Chat langsung di dalam website belum diaktifkan. Saat ini komunikasi pesanan dilakukan melalui Discord. Fitur live chat internal membutuhkan login pengguna, kebijakan akses database, dan sistem keamanan tambahan.</p></div>
   </section>
 </main>
 
@@ -275,6 +323,33 @@ document.getElementById("refresh-products").addEventListener("click", () => {
   window.__stograProductsLoaded = false;
   muatProdukStogra();
 });
+
+
+const chatSupabase = window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+let chatUser=null, chatRoom="lobby";
+const roomNames={lobby:["Lobby","PUBLIC ROOM","Obrolan umum komunitas."],support:["Customer Support","SUPPORT ROOM","Bantuan pesanan dan pertanyaan."],informasi:["Informasi","INFORMATION ROOM","Pertanyaan tentang layanan toko."],produk:["Diskusi Produk","PRODUCT ROOM","Diskusikan produk STOGRA STORE."]};
+function setChatUser(user){
+ chatUser=user;
+ const status=document.getElementById("profile-status"), state=document.getElementById("chat-user-state"), login=document.getElementById("google-login"), logout=document.getElementById("google-logout"), input=document.getElementById("chat-input"), send=document.getElementById("chat-send");
+ if(!status)return;
+ status.textContent=user?"Login sebagai "+(user.email||"akun Google"):"Belum login";
+ state.textContent=user?"Login: "+(user.email||"akun Google"):"Login Google diperlukan untuk mengirim pesan.";
+ login.hidden=!!user;logout.hidden=!user;input.disabled=!user;send.disabled=!user;
+ if(user)loadChat();else document.getElementById("chat-messages").innerHTML='<div class="chat-empty"><strong>Login untuk memulai chat</strong><p>Katalog tetap bisa dilihat tanpa login.</p></div>';
+}
+async function loadChat(){
+ const box=document.getElementById("chat-messages"),foot=document.getElementById("chat-footnote");
+ const {data,error}=await chatSupabase.from("web_chat_messages").select("id,room,user_id,display_name,message,created_at").eq("room",chatRoom).order("created_at",{ascending:true}).limit(100);
+ if(error){foot.textContent="Chat belum dikonfigurasi: "+error.message;box.innerHTML='<div class="chat-empty"><strong>Setup database diperlukan</strong><p>Jalankan SQL setup chat di Supabase sebelum mengirim pesan.</p></div>';return;}
+ box.replaceChildren();if(!data.length){box.innerHTML='<div class="chat-empty"><strong>Belum ada pesan</strong><p>Mulai percakapan di ruangan ini.</p></div>';return;}
+ data.forEach(m=>{const b=document.createElement("article");b.className="chat-bubble"+(m.user_id===chatUser.id?" mine":"");const n=document.createElement("strong");n.textContent=m.display_name||"Member";const p=document.createElement("p");p.textContent=m.message;const t=document.createElement("small");t.textContent=new Date(m.created_at).toLocaleString("id-ID");b.append(n,p,t);box.appendChild(b);});box.scrollTop=box.scrollHeight;foot.textContent="100 pesan terbaru atau kurang.";
+}
+document.querySelectorAll("[data-room]").forEach(b=>b.addEventListener("click",()=>{chatRoom=b.dataset.room;document.querySelectorAll("[data-room]").forEach(x=>x.classList.toggle("active",x===b));const info=roomNames[chatRoom];document.getElementById("chat-room-title").textContent=info[0];document.getElementById("chat-room-tag").textContent=info[1];document.getElementById("chat-room-description").textContent=info[2];loadChat();}));
+document.getElementById("chat-form").addEventListener("submit",async e=>{e.preventDefault();const input=document.getElementById("chat-input"),message=input.value.trim(),foot=document.getElementById("chat-footnote");if(!chatUser||!message)return;const name=chatUser.user_metadata?.full_name||chatUser.user_metadata?.name||chatUser.email?.split("@")[0]||"Member";const {error}=await chatSupabase.from("web_chat_messages").insert({room:chatRoom,user_id:chatUser.id,display_name:name,message});if(error){foot.textContent="Gagal mengirim: "+error.message;return;}input.value="";await loadChat();});
+document.getElementById("google-login").addEventListener("click",async()=>{const {error}=await chatSupabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname+"#profil"}});if(error)document.getElementById("profile-status").textContent="Login gagal: "+error.message;});
+document.getElementById("google-logout").addEventListener("click",async()=>{const {error}=await chatSupabase.auth.signOut();if(error)document.getElementById("profile-status").textContent=error.message;else setChatUser(null);});
+chatSupabase.auth.getSession().then(({data})=>setChatUser(data.session?.user||null));
+chatSupabase.auth.onAuthStateChange((_e,s)=>setChatUser(s?.user||null));
 
 async function muatProdukStogra() {
   if (!window.supabase || SUPABASE_PUBLISHABLE_KEY === "GANTI_DENGAN_PUBLISHABLE_KEY_KAMU") {
@@ -360,7 +435,7 @@ async function muatProdukStogra() {
 }
 
 const initialScreen = location.hash.replace("#", "");
-bukaScreen(["lobby","produk","informasi","komunikasi","pengumuman","admin"].includes(initialScreen) ? initialScreen : "lobby");
+bukaScreen(["lobby","produk","informasi","komunikasi","pengumuman","profil","admin"].includes(initialScreen) ? initialScreen : "lobby");
 muatProdukStogra();
 </script>
 </body>
