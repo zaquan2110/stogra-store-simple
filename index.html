@@ -386,7 +386,9 @@ document.getElementById("admin-login-form").addEventListener("submit", async (ev
     document.getElementById("admin-password").value = "";
     status.textContent = "Identitas admin terverifikasi. Panel pengelolaan belum diaktifkan; konfigurasi izin database perlu diselesaikan terlebih dahulu.";
   } catch (error) {
-    status.textContent = "Login admin gagal atau izin admin belum diberikan. Pastikan akun dibuat di Supabase dan role admin ditetapkan secara aman.";
+    console.error("STOGRA admin login error:", error);
+    const detail = error?.message || "Kesalahan tidak diketahui.";
+    status.textContent = "Login admin gagal: " + detail;
   } finally {
     submit.disabled = false;
   }
