@@ -155,7 +155,10 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
 body.auth-modal-open{overflow:hidden}
 #rules-welcome-overlay{z-index:1100}
 #rules-welcome-overlay .auth-required-card{text-align:left;max-height:88vh;overflow-y:auto}
-#rules-welcome-overlay .rules-long-copy{max-height:48vh;overflow-y:auto;padding-right:8px}
+#rules-welcome-overlay .rules-long-copy{max-height:125px;overflow:hidden;padding-right:8px;position:relative;transition:max-height .25s ease}
+#rules-welcome-overlay .rules-long-copy.expanded{max-height:48vh;overflow-y:auto}
+.rules-more-toggle{display:inline-flex;margin:8px 0 12px;padding:7px 0;border:0;background:transparent;color:#ff6871;font:inherit;font-weight:900;text-decoration:underline;cursor:pointer}
+.rules-more-toggle:hover{color:#fff}
 .admin-floating{position:fixed;right:18px;bottom:18px;z-index:900;opacity:.48;transform:translateY(0);transition:opacity .2s,transform .2s,box-shadow .2s;background:#170b0d;border:1px solid #ff303b;color:#ff6871;border-radius:12px;padding:12px 16px;font-weight:900;box-shadow:0 5px 22px #0009;cursor:pointer;backdrop-filter:blur(8px)}
 .admin-floating:hover,.admin-floating:focus-visible{opacity:1;transform:translateY(-2px);box-shadow:0 0 24px #ff303b50;outline:2px solid #ff6871;outline-offset:3px}
 @media(max-width:560px){.admin-floating{right:12px;bottom:12px;padding:10px 13px;font-size:12px}}
@@ -415,6 +418,7 @@ body.auth-modal-open{overflow:hidden}
         <p><strong>9. Penggunaan akun.</strong><br>Jaga akses akunmu dan jangan menyamar sebagai staff atau pengguna lain. Aktivitas pada akun menjadi tanggung jawab pemilik akun selama tidak terbukti terjadi akses tanpa izin.</p>
         <p><strong>10. Pembaruan aturan.</strong><br>Aturan dapat diperbarui untuk menjaga keamanan dan kenyamanan komunitas. Dengan melanjutkan, kamu menyatakan telah membaca dan bersedia mematuhi peraturan yang berlaku.</p>
       </div>
+      <button type="button" id="rules-more-toggle" class="rules-more-toggle" aria-expanded="false">Lihat teks lanjutnya ↓</button>
       <p id="rules-countdown" style="color:#ff6871;font-weight:800">Tombol persetujuan akan aktif setelah waktu membaca selesai.</p>
       <div class="auth-required-actions"><button class="btn primary" id="rules-dismiss" disabled>Tunggu...</button></div>
     </div>
@@ -492,6 +496,15 @@ document.querySelectorAll("[data-screen]").forEach((button) => {
 });
 // Peringatan aturan tampil setiap kunjungan halaman; tombol tutup aktif setelah 10 detik.
 const rulesOverlay = document.getElementById("rules-welcome-overlay");
+const rulesLongCopy = document.querySelector("#rules-welcome-overlay .rules-long-copy");
+const rulesMoreToggle = document.getElementById("rules-more-toggle");
+if (rulesLongCopy && rulesMoreToggle) {
+  rulesMoreToggle.addEventListener("click", () => {
+    const expanded = rulesLongCopy.classList.toggle("expanded");
+    rulesMoreToggle.setAttribute("aria-expanded", String(expanded));
+    rulesMoreToggle.textContent = expanded ? "Sembunyikan teks ↑" : "Lihat teks lanjutnya ↓";
+  });
+}
 if (rulesOverlay && !sessionStorage.getItem("stograRulesSeen")) {
   rulesOverlay.classList.add("show");
   document.body.classList.add("auth-modal-open");
