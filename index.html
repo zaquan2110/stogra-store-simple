@@ -363,8 +363,33 @@ document.querySelectorAll("[data-go]").forEach((button) => {
 });
 document.getElementById("admin-login-form").addEventListener("submit", async (event) => {
   event.preventDefault();
+  const form = event.currentTarget;
   const status = document.getElementById("admin-login-message");
-  status.textContent = "Form login sudah tersedia, tetapi autentikasi dan verifikasi role admin belum dikonfigurasi. Belum ada akses admin yang diberikan.";
+  const submit = document.getElementById("admin-login-submit");
+  const email = document.getElementById("admin-email").value.trim();
+  const password = document.getElementById("admin-password").value;
+  submit.disabled = true;
+  status.textContent = "Memverifikasi akun admin...";
+  try {
+    const { data, error } = await chatSupabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    const user = data?.user || data?.session?.user;
+    // Admin access must come from trusted app_metadata, never user-editable user_metadata.
+    if (user?.app_metadata?.role !== "admin") {
+      await chatSupabase.auth.signOut();
+      authStateReady = true;
+      setChatUser(null);
+      throw new Error("Akun ini belum memiliki izin admin.");
+    }
+    authStateReady = true;
+    setChatUser(user);
+    document.getElementById("admin-password").value = "";
+    status.textContent = "Identitas admin terverifikasi. Panel pengelolaan belum diaktifkan; konfigurasi izin database perlu diselesaikan terlebih dahulu.";
+  } catch (error) {
+    status.textContent = "Login admin gagal atau izin admin belum diberikan. Pastikan akun dibuat di Supabase dan role admin ditetapkan secara aman.";
+  } finally {
+    submit.disabled = false;
+  }
 });
 document.getElementById("refresh-products").addEventListener("click", () => {
   window.__stograProductsLoaded = false;
