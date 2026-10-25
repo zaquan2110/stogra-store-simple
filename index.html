@@ -132,6 +132,16 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
 #admin-login-message{font-size:13px;line-height:1.6;color:#ff9ca2}
 .admin-security-note{font-size:12px;line-height:1.7;color:#888;border-top:1px solid #ffffff17;padding-top:16px;margin-top:22px}
 .admin-back{display:inline-block;color:#ff6871;font-size:13px;font-weight:800;margin-top:16px}
+.auth-required-overlay{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;background:#000c;backdrop-filter:blur(8px)}
+.auth-required-overlay.show{display:flex}
+.auth-required-card{width:min(440px,100%);padding:28px;border:1px solid #7b252d;border-radius:18px;background:linear-gradient(145deg,#26090d,#101010 75%);box-shadow:0 24px 90px #000b;text-align:center}
+.auth-required-icon{width:58px;height:58px;display:grid;place-items:center;margin:0 auto 18px;border-radius:16px;background:#ff303b;font-size:28px;font-weight:900;box-shadow:0 0 28px #ff303b40}
+.auth-required-card h2{margin:8px 0 12px;font-size:27px}
+.auth-required-card p{color:#bbb;line-height:1.75;font-size:14px}
+.auth-required-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:20px}
+.auth-required-actions .btn{justify-content:center}
+.auth-required-close{margin-top:16px;background:none;border:0;color:#aaa;text-decoration:underline;cursor:pointer;font:inherit}
+body.auth-modal-open{overflow:hidden}
 .screen{display:none;min-height:65vh}.screen.active{display:block}
 .screen-nav{align-items:center}
 .nav-item{font:inherit;color:#bbb;background:transparent;border:1px solid transparent;border-radius:8px;padding:9px 12px;cursor:pointer}
@@ -189,6 +199,20 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
     </div>
   </nav>
 </header>
+
+<div id="auth-required-overlay" class="auth-required-overlay" role="dialog" aria-modal="true" aria-labelledby="auth-required-title" aria-describedby="auth-required-description">
+  <div class="auth-required-card">
+    <div class="auth-required-icon">!</div>
+    <div class="eyebrow">MEMBER AREA</div>
+    <h2 id="auth-required-title">Login Diperlukan</h2>
+    <p id="auth-required-description">Untuk menggunakan fitur komunikasi, mengirim pesan, atau mengirim DM di STOGRA STORE, kamu wajib membuat akun atau login terlebih dahulu.</p>
+    <div class="auth-required-actions">
+      <button type="button" class="btn primary" id="auth-required-login">Login / Buat Akun</button>
+      <button type="button" class="btn" id="auth-required-cancel">Nanti saja</button>
+    </div>
+    <button type="button" class="auth-required-close" id="auth-required-close">Tutup peringatan</button>
+  </div>
+</div>
 
 <main>
   <section id="screen-lobby" class="screen active">
@@ -338,7 +362,26 @@ function buatElemen(tag, className, text) {
 }
 
 
+function tampilkanPeringatanLogin() {
+  const overlay = document.getElementById("auth-required-overlay");
+  overlay.classList.add("show");
+  document.body.classList.add("auth-modal-open");
+  document.getElementById("auth-required-login").focus();
+}
+function tutupPeringatanLogin() {
+  document.getElementById("auth-required-overlay").classList.remove("show");
+  document.body.classList.remove("auth-modal-open");
+}
+function perluLoginUntukKomunikasi(namaScreen) {
+  if (namaScreen === "komunikasi" && (!authStateReady || !chatUser)) {
+    tampilkanPeringatanLogin();
+    return true;
+  }
+  return false;
+}
+
 function bukaScreen(nama, updateUrl = true) {
+  if (perluLoginUntukKomunikasi(nama)) return;
   document.querySelectorAll(".screen").forEach((screen) => {
     screen.classList.toggle("active", screen.id === "screen-" + nama);
   });
@@ -360,6 +403,18 @@ document.querySelectorAll("[data-screen]").forEach((button) => {
 });
 document.querySelectorAll("[data-go]").forEach((button) => {
   button.addEventListener("click", () => bukaScreen(button.dataset.go));
+});
+document.getElementById("auth-required-login").addEventListener("click", () => {
+  tutupPeringatanLogin();
+  bukaScreen("profil");
+});
+document.getElementById("auth-required-cancel").addEventListener("click", tutupPeringatanLogin);
+document.getElementById("auth-required-close").addEventListener("click", tutupPeringatanLogin);
+document.getElementById("auth-required-overlay").addEventListener("click", (event) => {
+  if (event.target.id === "auth-required-overlay") tutupPeringatanLogin();
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") tutupPeringatanLogin();
 });
 document.getElementById("admin-login-form").addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -419,7 +474,7 @@ function openDm(otherId,name,room){
  activeDmUser=otherId;chatRoom=room;document.querySelectorAll("[data-room]").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".dm-contact").forEach(x=>x.classList.toggle("active",x.querySelector("strong")?.textContent===name));
  document.getElementById("chat-room-title").textContent=name;document.getElementById("chat-room-tag").textContent="DIRECT MESSAGE";document.getElementById("chat-room-description").textContent="Percakapan pribadi antar akun.";loadChat();
 }
-document.getElementById("dm-new-button").addEventListener("click",()=>{if(!chatUser){document.getElementById("dm-status").textContent="Login terlebih dahulu untuk menggunakan DM.";document.getElementById("dm-new-form").hidden=false;return;}const f=document.getElementById("dm-new-form");f.hidden=!f.hidden;});
+document.getElementById("dm-new-button").addEventListener("click",()=>{if(!authStateReady||!chatUser){tampilkanPeringatanLogin();return;}const f=document.getElementById("dm-new-form");f.hidden=!f.hidden;});
 document.getElementById("dm-new-form").addEventListener("submit",async e=>{e.preventDefault();const status=document.getElementById("dm-status");if(!chatUser){status.textContent="Login terlebih dahulu.";return;}const username=document.getElementById("dm-recipient").value.trim();if(!username){status.textContent="Masukkan username member.";return;}status.textContent="Mencari member...";const {data,error}=await chatSupabase.rpc("search_member_by_username",{search_username:username});if(error){status.textContent="Pencarian gagal: "+error.message;return;}const member=(data||[]).find(p=>p.id!==chatUser.id);if(!member){status.textContent="Username tidak ditemukan. Periksa ejaan atau pastikan member sudah memiliki profil.";return;}const room=dmRoomId(chatUser.id,member.id);status.textContent="Member ditemukan: "+member.username+". Membuka DM...";openDm(member.id,member.username,room);document.getElementById("dm-new-form").hidden=true;document.getElementById("dm-recipient").value="";});
 
 const roomNames={lobby:["Lobby","PUBLIC ROOM","Obrolan umum komunitas."],support:["Customer Support","SUPPORT ROOM","Bantuan pesanan dan pertanyaan."],informasi:["Informasi","INFORMATION ROOM","Pertanyaan tentang layanan toko."],produk:["Diskusi Produk","PRODUCT ROOM","Diskusikan produk STOGRA STORE."]};
@@ -461,7 +516,7 @@ async function loadChat(){
  data.forEach(m=>{const b=document.createElement("article");b.className="chat-bubble"+(m.user_id===chatUser.id?" mine":"");const n=document.createElement("strong");n.textContent=m.display_name||"Member";const p=document.createElement("p");p.textContent=m.message;const t=document.createElement("small");t.textContent=new Date(m.created_at).toLocaleString("id-ID");b.append(n,p,t);box.appendChild(b);});box.scrollTop=box.scrollHeight;foot.textContent="100 pesan terbaru atau kurang.";
 }
 document.querySelectorAll("[data-room]").forEach(b=>b.addEventListener("click",()=>showChatRoom(b.dataset.room)));
-document.getElementById("chat-form").addEventListener("submit",async e=>{e.preventDefault();const input=document.getElementById("chat-input"),message=input.value.trim(),foot=document.getElementById("chat-footnote");if(!chatUser||!message)return;const name=chatUser.user_metadata?.full_name||chatUser.user_metadata?.name||chatUser.email?.split("@")[0]||"Member";const {error}=await chatSupabase.from("web_chat_message").insert({room:chatRoom,user_id:chatUser.id,display_name:name,message});if(error){foot.textContent="Gagal mengirim: "+error.message;return;}input.value="";await loadChat();});
+document.getElementById("chat-form").addEventListener("submit",async e=>{e.preventDefault();const input=document.getElementById("chat-input"),message=input.value.trim(),foot=document.getElementById("chat-footnote");if(!authStateReady||!chatUser){tampilkanPeringatanLogin();return;}if(!message)return;const name=chatUser.user_metadata?.full_name||chatUser.user_metadata?.name||chatUser.email?.split("@")[0]||"Member";const {error}=await chatSupabase.from("web_chat_message").insert({room:chatRoom,user_id:chatUser.id,display_name:name,message});if(error){foot.textContent="Gagal mengirim: "+error.message;return;}input.value="";await loadChat();});
 document.getElementById("member-show-password").addEventListener("change", (event) => {
   document.getElementById("member-password").type = event.target.checked ? "text" : "password";
 });
