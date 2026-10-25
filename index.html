@@ -160,15 +160,24 @@ async function muatProdukStogra() {
     SUPABASE_PUBLISHABLE_KEY
   );
 
-  const { data, error } = await supabaseClient
-    .from("products")
-    .select("name, slug, category, description, price, image_url")
-    .eq("status", "active")
-    .order("created_at", { ascending: false });
+  let result;
+  try {
+    result = await supabaseClient
+      .from("products")
+      .select("name, slug, category, description, price, image_url")
+      .eq("status", "active")
+      .order("created_at", { ascending: false });
+  } catch (err) {
+    console.error("Supabase catalog connection error:", err);
+    message.textContent = "Koneksi katalog gagal. Periksa internet, lalu muat ulang halaman.";
+    return;
+  }
+
+  const { data, error } = result;
 
   if (error) {
-    console.error("Supabase catalog error:", error.message);
-    message.textContent = "Produk belum dapat dimuat. Periksa koneksi dan kebijakan akses katalog Supabase.";
+    console.error("Supabase catalog error:", error);
+    message.textContent = "Gagal memuat katalog (" + (error.code || "tanpa kode") + "): " + error.message;
     return;
   }
 
