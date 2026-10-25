@@ -27,4 +27,34 @@
 <section id="komunitas" class="section community"><div class="wrap"><div class="section-head"><small>JOIN OUR COMMUNITY</small><h2>Bergabung dengan Kami</h2><p class="sub">Ikuti komunitas dan kabar terbaru STOGRA STORE.</p></div><div class="socials"><a class="btn primary" href="https://discord.gg/uwKk9znZem" target="_blank" rel="noopener">Discord ↗</a><a class="btn" href="https://www.instagram.com/staragam/" target="_blank" rel="noopener">Instagram ↗</a><a class="btn" href="https://www.tiktok.com/" target="_blank" rel="noopener">TikTok ↗</a></div></div></section>
 </main><footer><div class="wrap">© <span id="year"></span> STOGRA STORE. All rights reserved.</div></footer>
 <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
-</body></html>
+<!-- Koneksi Supabase untuk katalog STOGRA STORE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const SUPABASE_URL = "https://mpfowbmcgjheauxtbaeb.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_bYJzqLR2p69jQUX3WwKdaQ_HMQR2N-_";
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+  async function cekProdukStogra() {
+    const { data, error } = await supabaseClient
+      .from("products")
+      .select("name, slug, category, description, price, image_url")
+      .eq("status", "active")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Gagal mengambil produk:", error.message);
+      return;
+    }
+
+    console.log("Produk STOGRA STORE:", data);
+  }
+
+  cekProdukStogra();
+</script>
+</body>
+</html>
