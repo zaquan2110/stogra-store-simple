@@ -494,43 +494,65 @@ function bukaScreen(nama, updateUrl = true) {
 document.querySelectorAll("[data-screen]").forEach((button) => {
   button.addEventListener("click", () => bukaScreen(button.dataset.screen));
 });
-// Peringatan aturan tampil setiap kunjungan halaman; tombol tutup aktif setelah 10 detik.
+// Aturan wajib dibaca sampai bagian paling bawah dan minimal 16 detik.
 const rulesOverlay = document.getElementById("rules-welcome-overlay");
 const rulesLongCopy = document.querySelector("#rules-welcome-overlay .rules-long-copy");
 const rulesMoreToggle = document.getElementById("rules-more-toggle");
+const rulesCountdown = document.getElementById("rules-countdown");
+const rulesDismiss = document.getElementById("rules-dismiss");
+let rulesTimerDone = false;
+let rulesReachedBottom = false;
+function updateRulesGate() {
+  if (!rulesDismiss) return;
+  const canContinue = rulesTimerDone && rulesReachedBottom;
+  rulesDismiss.disabled = !canContinue;
+  rulesDismiss.textContent = canContinue ? "Saya Mengerti" : (!rulesTimerDone ? "Tunggu " + rulesRemaining + " detik…" : "Baca sampai akhir ↓");
+  if (rulesCountdown) {
+    rulesCountdown.textContent = canContinue ? "Selesai membaca. Kamu dapat melanjutkan ke website." :
+      (!rulesTimerDone ? "Baca seluruh aturan. Tombol aktif setelah 16 detik dan teks mencapai bagian paling bawah." : "Gulir teks aturan sampai benar-benar paling bawah untuk melanjutkan.");
+  }
+}
+let rulesRemaining = 16;
 if (rulesLongCopy && rulesMoreToggle) {
   rulesMoreToggle.addEventListener("click", () => {
     const expanded = rulesLongCopy.classList.toggle("expanded");
     rulesMoreToggle.setAttribute("aria-expanded", String(expanded));
     rulesMoreToggle.textContent = expanded ? "Sembunyikan teks ↑" : "Lihat teks lanjutnya ↓";
+    if (expanded) requestAnimationFrame(() => {
+      rulesLongCopy.scrollTop = 0;
+      rulesReachedBottom = false;
+      updateRulesGate();
+    });
+  });
+  rulesLongCopy.addEventListener("scroll", () => {
+    const atBottom = rulesLongCopy.scrollTop + rulesLongCopy.clientHeight >= rulesLongCopy.scrollHeight - 3;
+    if (rulesLongCopy.classList.contains("expanded") && atBottom) rulesReachedBottom = true;
+    updateRulesGate();
   });
 }
 if (rulesOverlay && !sessionStorage.getItem("stograRulesSeen")) {
   rulesOverlay.classList.add("show");
   document.body.classList.add("auth-modal-open");
-  let remaining = 45;
-  const countdown = document.getElementById("rules-countdown");
-  const dismiss = document.getElementById("rules-dismiss");
-  dismiss.disabled = true;
+  rulesDismiss.disabled = true;
+  rulesDismiss.textContent = "Tunggu 16 detik…";
+  updateRulesGate();
   const timer = setInterval(() => {
-    remaining--;
-    if (remaining > 0) {
-      countdown.textContent = "Peringatan akan tertutup dalam " + remaining + " detik…";
-      dismiss.textContent = "Tunggu " + remaining + " detik…";
+    rulesRemaining--;
+    if (rulesRemaining > 0) {
+      updateRulesGate();
     } else {
       clearInterval(timer);
-      countdown.textContent = "Waktu membaca selesai. Kamu dapat melanjutkan ke website.";
-      dismiss.disabled = false;
-      dismiss.textContent = "Saya Mengerti";
+      rulesRemaining = 0;
+      rulesTimerDone = true;
+      updateRulesGate();
     }
   }, 1000);
-  dismiss.addEventListener("click", () => {
-    if (dismiss.disabled) return;
+  rulesDismiss.addEventListener("click", () => {
+    if (rulesDismiss.disabled || !rulesReachedBottom || !rulesTimerDone) return;
     rulesOverlay.classList.remove("show");
     document.body.classList.remove("auth-modal-open");
     sessionStorage.setItem("stograRulesSeen", "1");
   });
-  
 }
 const motionToggle = document.getElementById("reduce-motion-toggle");
 if (motionToggle) {
