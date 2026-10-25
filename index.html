@@ -153,6 +153,13 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
 .auth-required-actions .btn{justify-content:center}
 .auth-required-close{margin-top:16px;background:none;border:0;color:#aaa;text-decoration:underline;cursor:pointer;font:inherit}
 body.auth-modal-open{overflow:hidden}
+#rules-welcome-overlay{z-index:1100}
+#rules-welcome-overlay .auth-required-card{text-align:left}
+#rules-welcome-overlay .auth-required-icon{margin-left:0}
+#rules-welcome-overlay .auth-required-actions{justify-content:flex-start}
+#rules-dismiss:disabled{opacity:.55;cursor:not-allowed}
+#screen-pengaturan input[type="checkbox"]{accent-color:#ff303b;width:18px;height:18px}
+
 .screen{display:none;min-height:65vh}.screen.active{display:block}
 .screen-nav{align-items:center}
 .nav-item{font:inherit;color:#bbb;background:transparent;border:1px solid transparent;border-radius:8px;padding:9px 12px;cursor:pointer}
@@ -217,6 +224,9 @@ body.auth-modal-open{overflow:hidden}
       <button class="nav-item" data-screen="informasi">Informasi</button>
       <button class="nav-item" data-screen="komunikasi">Komunikasi</button>
       <button class="nav-item" data-screen="pengumuman">Pengumuman</button>
+      <button class="nav-item" data-screen="aturan">Peraturan</button>
+      <button class="nav-item" data-screen="pengaturan">Pengaturan</button>
+      <button class="nav-item" data-screen="media">Media Sosial</button>
       <button class="nav-item" data-screen="profil">Profil Akun</button>
       <button class="nav-item admin-nav" data-screen="admin">Login Admin ↗</button>
       </div>
@@ -364,6 +374,48 @@ body.auth-modal-open{overflow:hidden}
 
 
 
+  <section id="screen-aturan" class="screen section wrap">
+    <div class="section-head"><small>COMMUNITY GUIDELINES</small><h2>Peraturan STOGRA STORE</h2><p class="sub">Mohon baca aturan berikut agar komunitas tetap aman dan nyaman.</p></div>
+    <div class="faq-list">
+      <details class="faq" open><summary>1. Hormati pengguna dan staff</summary><p>Dilarang melakukan penghinaan, pelecehan, ancaman, spam, atau mengganggu pengguna lain.</p></details>
+      <details class="faq"><summary>2. Dilarang menyalahgunakan layanan</summary><p>Jangan mencoba merusak website, mengeksploitasi celah keamanan, memanipulasi transaksi, atau mengakses akun tanpa izin.</p></details>
+      <details class="faq"><summary>3. Pesanan dan produk</summary><p>Periksa deskripsi produk dan konfirmasi detail dengan staff sebelum melakukan pemesanan atau pembayaran.</p></details>
+      <details class="faq"><summary>4. Privasi dan keamanan akun</summary><p>Jangan membagikan password atau kode verifikasi. Staff tidak akan meminta password atau OTP kamu.</p></details>
+      <details class="faq"><summary>5. Moderasi dan banding</summary><p>Pelanggaran dapat mengakibatkan peringatan atau pembatasan akses. Jika merasa keputusan keliru, hubungi staff melalui kanal resmi untuk meminta peninjauan.</p></details>
+    </div>
+  </section>
+
+  <section id="screen-pengaturan" class="screen section wrap">
+    <div class="section-head"><small>PREFERENCES</small><h2>Pengaturan Website</h2><p class="sub">Atur preferensi tampilan yang tersedia di browser ini.</p></div>
+    <div class="info-banner"><h3>Preferensi tampilan</h3><p>Website STOGRA STORE menggunakan tema gelap hitam dan merah neon. Pilihan ini dapat disimpan pada browser yang sedang kamu gunakan.</p>
+      <label style="display:flex;align-items:center;gap:12px;margin-top:18px"><input type="checkbox" id="reduce-motion-toggle"> Kurangi animasi website</label>
+      <p id="settings-message" role="status">Pengaturan tersimpan di browser ini.</p>
+    </div>
+  </section>
+
+  <section id="screen-media" class="screen section wrap">
+    <div class="section-head"><small>JOIN OUR COMMUNITY</small><h2>Media Sosial & Komunitas</h2><p class="sub">Pilih platform untuk mengunjungi atau bergabung. Tautan di bawah masih contoh dan bisa diganti nanti.</p></div>
+    <div class="grid">
+      <article class="contact-card"><span class="contact-symbol">◈</span><h3>Discord</h3><p>Gabung ke server resmi STOGRA STORE untuk dukungan dan informasi.</p><a class="btn primary" href="https://discord.gg/uwKk9znZem" target="_blank" rel="noopener noreferrer">Gabung Discord ↗</a></article>
+      <article class="contact-card"><span class="contact-symbol">▶</span><h3>YouTube</h3><p>Tautan contoh — ganti dengan channel resmi nanti.</p><a class="btn" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">Buka YouTube ↗</a></article>
+      <article class="contact-card"><span class="contact-symbol">♪</span><h3>TikTok</h3><p>Tautan contoh — ganti dengan profil resmi nanti.</p><a class="btn" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">Buka TikTok ↗</a></article>
+      <article class="contact-card"><span class="contact-symbol">◎</span><h3>Instagram</h3><p>Tautan contoh — ganti dengan profil resmi nanti.</p><a class="btn" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Buka Instagram ↗</a></article>
+      <article class="contact-card"><span class="contact-symbol">𝕏</span><h3>X / Twitter</h3><p>Tautan contoh — ganti dengan profil resmi nanti.</p><a class="btn" href="https://x.com/" target="_blank" rel="noopener noreferrer">Buka X ↗</a></article>
+      <article class="contact-card"><span class="contact-symbol">f</span><h3>Facebook</h3><p>Tautan contoh — ganti dengan halaman resmi nanti.</p><a class="btn" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">Buka Facebook ↗</a></article>
+    </div>
+    <p class="note">Selain Discord, semua tautan saat ini hanya menuju halaman utama platform, bukan akun resmi STOGRA STORE.</p>
+  </section>
+
+  <div id="rules-welcome-overlay" class="auth-required-overlay" role="dialog" aria-modal="true" aria-labelledby="rules-welcome-title">
+    <div class="auth-required-card">
+      <div class="auth-required-icon">!</div><div class="eyebrow">WELCOME TO STOGRA STORE</div>
+      <h2 id="rules-welcome-title">Baca Peraturan Sebelum Melanjutkan</h2>
+      <p>Hormati pengguna lain, jaga keamanan akun, dan jangan membagikan password atau kode verifikasi. Pelanggaran dapat menyebabkan pembatasan akses.</p>
+      <p id="rules-countdown" style="color:#ff6871;font-weight:800">Peringatan akan tertutup dalam 10 detik…</p>
+      <div class="auth-required-actions"><button class="btn" id="rules-read-more">Baca Peraturan</button><button class="btn primary" id="rules-dismiss" disabled>Tunggu 10 detik…</button></div>
+    </div>
+  </div>
+
 <footer>
   <div class="wrap">© <span id="year"></span> STOGRA STORE. All rights reserved.</div>
 </footer>
@@ -432,6 +484,52 @@ function bukaScreen(nama, updateUrl = true) {
 document.querySelectorAll("[data-screen]").forEach((button) => {
   button.addEventListener("click", () => bukaScreen(button.dataset.screen));
 });
+// Peringatan aturan tampil setiap kunjungan halaman; tombol tutup aktif setelah 10 detik.
+const rulesOverlay = document.getElementById("rules-welcome-overlay");
+if (rulesOverlay && !sessionStorage.getItem("stograRulesSeen")) {
+  rulesOverlay.classList.add("show");
+  document.body.classList.add("auth-modal-open");
+  let remaining = 10;
+  const countdown = document.getElementById("rules-countdown");
+  const dismiss = document.getElementById("rules-dismiss");
+  dismiss.disabled = true;
+  const timer = setInterval(() => {
+    remaining--;
+    if (remaining > 0) {
+      countdown.textContent = "Peringatan akan tertutup dalam " + remaining + " detik…";
+      dismiss.textContent = "Tunggu " + remaining + " detik…";
+    } else {
+      clearInterval(timer);
+      countdown.textContent = "Kamu dapat menutup peringatan atau membaca peraturan lengkap.";
+      dismiss.disabled = false;
+      dismiss.textContent = "Saya Mengerti";
+    }
+  }, 1000);
+  dismiss.addEventListener("click", () => {
+    if (dismiss.disabled) return;
+    rulesOverlay.classList.remove("show");
+    document.body.classList.remove("auth-modal-open");
+    sessionStorage.setItem("stograRulesSeen", "1");
+  });
+  document.getElementById("rules-read-more").addEventListener("click", () => {
+    rulesOverlay.classList.remove("show");
+    document.body.classList.remove("auth-modal-open");
+    sessionStorage.setItem("stograRulesSeen", "1");
+    bukaScreen("aturan");
+  });
+}
+const motionToggle = document.getElementById("reduce-motion-toggle");
+if (motionToggle) {
+  motionToggle.checked = localStorage.getItem("stograReduceMotion") === "1";
+  const applyMotion = () => {
+    document.documentElement.style.scrollBehavior = motionToggle.checked ? "auto" : "smooth";
+    localStorage.setItem("stograReduceMotion", motionToggle.checked ? "1" : "0");
+    const msg = document.getElementById("settings-message");
+    if (msg) msg.textContent = motionToggle.checked ? "Animasi gulir dikurangi." : "Pengaturan tersimpan di browser ini.";
+  };
+  motionToggle.addEventListener("change", applyMotion);
+  applyMotion();
+}
 document.querySelectorAll("[data-go]").forEach((button) => {
   button.addEventListener("click", () => bukaScreen(button.dataset.go));
 });
@@ -740,7 +838,7 @@ async function muatProdukStogra() {
 }
 
 const initialScreen = location.hash.replace("#", "");
-bukaScreen(["lobby","produk","informasi","komunikasi","pengumuman","profil","admin"].includes(initialScreen) ? initialScreen : "lobby", false);
+bukaScreen(["lobby","produk","informasi","komunikasi","pengumuman","profil","admin","aturan","pengaturan","media"].includes(initialScreen) ? initialScreen : "lobby", false);
 muatProdukStogra();
 </script>
 </body>
