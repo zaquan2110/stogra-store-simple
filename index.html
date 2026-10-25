@@ -137,7 +137,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = "https://mpfowbmcgjheauxtbaeb.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "GANTI_DENGAN_PUBLISHABLE_KEY_KAMU";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_bYJzqLR2p69jQUX3WwKdaQ_HMQR2N-_";
 
 const grid = document.getElementById("product-grid");
 const message = document.getElementById("catalog-message");
@@ -150,7 +150,7 @@ function buatElemen(tag, className, text) {
 }
 
 async function muatProdukStogra() {
-  if (!window.supabase || SUPABASE_PUBLISHABLE_KEY === "sb_publishable_bYJzqLR2p69jQUX3WwKdaQ_HMQR2N-_") {
+  if (!window.supabase || SUPABASE_PUBLISHABLE_KEY === "GANTI_DENGAN_PUBLISHABLE_KEY_KAMU") {
     message.textContent = "Koneksi belum siap. Periksa Publishable key Supabase di konfigurasi website.";
     return;
   }
