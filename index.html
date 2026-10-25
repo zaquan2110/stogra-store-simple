@@ -73,6 +73,7 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
 .dm-new-form label,.dm-new-form p{font-size:10px;color:#aaa;margin:0;overflow-wrap:anywhere}
 .dm-new-form input{width:100%;min-width:0;box-sizing:border-box;background:#111;border:1px solid #393030;color:#fff;border-radius:6px;padding:9px}
 .dm-new-form .btn{padding:8px;font-size:11px}
+.world-clock-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:22px}.world-clock-card{border:1px solid #352126;background:linear-gradient(145deg,#171010,#0b0b0b);border-radius:12px;padding:16px;min-width:0}.world-clock-card strong{display:block;font-size:13px}.world-clock-card time{display:block;color:#ff6069;font-size:clamp(18px,3vw,25px);font-weight:900;margin:8px 0;font-variant-numeric:tabular-nums}.world-clock-card small{color:#999;font-size:11px}.clock-note{color:#888;font-size:12px;line-height:1.6;margin-top:14px}
 .dm-list{display:flex;flex-direction:column;gap:5px;max-height:180px;overflow:auto}
 .dm-list small{color:#888;font-size:10px;line-height:1.5}
 .dm-contact{display:block;width:100%;text-align:left;background:#111;border:1px solid #302323;border-radius:7px;padding:9px;color:#eee;cursor:pointer;overflow-wrap:anywhere}
@@ -181,7 +182,7 @@ body.auth-modal-open{overflow:hidden}
  nav{align-items:flex-start}
  .brand{font-size:14px}
 }
-</style>
+@media(max-width:560px){.world-clock-grid{grid-template-columns:1fr 1fr}}\n</style>
 </head>
 
 <body>
@@ -323,7 +324,7 @@ body.auth-modal-open{overflow:hidden}
         <button class="room-button" data-room="produk"><span>▦</span><div><strong>Diskusi Produk</strong><small>Diskusi produk</small></div></button>
         <div class="dm-section">
           <div class="dm-section-head"><strong>Pesan Pribadi</strong><button type="button" class="text-link" id="dm-new-button">+ Chat baru</button></div>
-          <form id="dm-new-form" class="dm-new-form" hidden><label for="dm-recipient">Username member</label><input id="dm-recipient" type="text" maxlength="30" placeholder="Masukkan username" autocomplete="off" required><button class="btn" type="submit">Cari Member</button><p id="dm-status" role="status"></p></form>
+          <form id="dm-new-form" class="dm-new-form" hidden><label for="dm-recipient">Cari member (nama/username atau Gmail)</label><input id="dm-recipient" type="text" maxlength="254" list="dm-member-options" placeholder="Pilih member atau ketik username/Gmail" autocomplete="off" required><datalist id="dm-member-options"></datalist><button class="btn" type="button" id="dm-refresh-members">Muat daftar member</button><button class="btn" type="submit">Cari & Buka DM</button><p id="dm-status" role="status"></p></form>
           <div id="dm-list" class="dm-list"><small>Login untuk membuka DM.</small></div>
         </div>
         <div class="chat-sidebar-foot" id="chat-user-state">Login Google atau Discord diperlukan untuk mengirim pesan.</div>
@@ -338,12 +339,38 @@ body.auth-modal-open{overflow:hidden}
   </section>
 </main>
 
+<section class="section" id="jam-dunia"><div class="wrap"><div class="section-head"><small>WORLD CLOCK</small><h2>Jam <span class="red">Dunia</span></h2><p class="sub">Waktu lokal real-time di berbagai kota dunia.</p></div><div class="world-clock-grid" id="world-clock-grid"><div class="world-clock-card"><strong>Memuat jam dunia…</strong></div></div><p class="clock-note">Jam mengikuti zona waktu resmi masing-masing kota dan diperbarui otomatis di perangkat Anda.</p></div></section>
+
 <footer>
   <div class="wrap">© <span id="year"></span> STOGRA STORE. All rights reserved.</div>
 </footer>
 
 <script>
 document.getElementById("year").textContent = new Date().getFullYear();
+
+const WORLD_CLOCKS = [
+  {city:"Jakarta",zone:"Asia/Jakarta"},
+  {city:"Singapore",zone:"Asia/Singapore"},
+  {city:"Tokyo",zone:"Asia/Tokyo"},
+  {city:"Dubai",zone:"Asia/Dubai"},
+  {city:"London",zone:"Europe/London"},
+  {city:"New York",zone:"America/New_York"},
+  {city:"Los Angeles",zone:"America/Los_Angeles"},
+  {city:"Sydney",zone:"Australia/Sydney"}
+];
+function updateWorldClocks(){
+ const grid=document.getElementById("world-clock-grid");if(!grid)return;
+ grid.replaceChildren();
+ WORLD_CLOCKS.forEach(item=>{
+  const card=document.createElement("div");card.className="world-clock-card";
+  const name=document.createElement("strong");name.textContent=item.city;
+  const time=document.createElement("time");time.dateTime=new Date().toISOString();
+  time.textContent=new Intl.DateTimeFormat("id-ID",{timeZone:item.zone,hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(new Date());
+  const date=document.createElement("small");date.textContent=new Intl.DateTimeFormat("id-ID",{timeZone:item.zone,weekday:"short",day:"2-digit",month:"short",year:"numeric"}).format(new Date());
+  card.append(name,time,date);grid.append(card);
+ });
+}
+updateWorldClocks();setInterval(updateWorldClocks,1000);
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -474,8 +501,19 @@ function openDm(otherId,name,room){
  activeDmUser=otherId;chatRoom=room;document.querySelectorAll("[data-room]").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".dm-contact").forEach(x=>x.classList.toggle("active",x.querySelector("strong")?.textContent===name));
  document.getElementById("chat-room-title").textContent=name;document.getElementById("chat-room-tag").textContent="DIRECT MESSAGE";document.getElementById("chat-room-description").textContent="Percakapan pribadi antar akun.";loadChat();
 }
-document.getElementById("dm-new-button").addEventListener("click",()=>{if(!authStateReady||!chatUser){tampilkanPeringatanLogin();return;}const f=document.getElementById("dm-new-form");f.hidden=!f.hidden;});
-document.getElementById("dm-new-form").addEventListener("submit",async e=>{e.preventDefault();const status=document.getElementById("dm-status");if(!chatUser){status.textContent="Login terlebih dahulu.";return;}const username=document.getElementById("dm-recipient").value.trim();if(!username){status.textContent="Masukkan username member.";return;}status.textContent="Mencari member...";const {data,error}=await chatSupabase.rpc("search_member_by_username",{search_username:username});if(error){status.textContent="Pencarian gagal: "+error.message;return;}const member=(data||[]).find(p=>p.id!==chatUser.id);if(!member){status.textContent="Username tidak ditemukan. Periksa ejaan atau pastikan member sudah memiliki profil.";return;}const room=dmRoomId(chatUser.id,member.id);status.textContent="Member ditemukan: "+member.username+". Membuka DM...";openDm(member.id,member.username,room);document.getElementById("dm-new-form").hidden=true;document.getElementById("dm-recipient").value="";});
+async function muatDaftarMemberDM(){
+ const status=document.getElementById("dm-status"), options=document.getElementById("dm-member-options");
+ if(!chatUser){status.textContent="Login terlebih dahulu.";return;}
+ status.textContent="Memuat daftar member...";
+ const {data,error}=await chatSupabase.rpc("list_members_for_dm");
+ if(error){status.textContent="Daftar member belum tersedia. Jalankan SQL pengaturan yang saya berikan.";return;}
+ options.replaceChildren();
+ (data||[]).filter(p=>p.id!==chatUser.id).forEach(p=>{const option=document.createElement("option");option.value=p.username;option.label=p.verified?"Member terverifikasi":"Member";options.appendChild(option);});
+ status.textContent=(data||[]).filter(p=>p.id!==chatUser.id).length+" member tersedia. Bisa cari dengan username atau Gmail.";
+}
+document.getElementById("dm-new-button").addEventListener("click",()=>{if(!authStateReady||!chatUser){tampilkanPeringatanLogin();return;}const f=document.getElementById("dm-new-form");f.hidden=!f.hidden;if(!f.hidden)muatDaftarMemberDM();});
+document.getElementById("dm-refresh-members").addEventListener("click",muatDaftarMemberDM);
+document.getElementById("dm-new-form").addEventListener("submit",async e=>{e.preventDefault();const status=document.getElementById("dm-status");if(!chatUser){status.textContent="Login terlebih dahulu.";return;}const term=document.getElementById("dm-recipient").value.trim();if(!term){status.textContent="Pilih member atau ketik username/Gmail.";return;}status.textContent="Mencari member...";const {data,error}=await chatSupabase.rpc("search_member_for_dm",{search_term:term});if(error){status.textContent="Pencarian belum siap. Jalankan SQL pengaturan daftar member.";return;}const member=(data||[]).find(p=>p.id!==chatUser.id);if(!member){status.textContent="Member tidak ditemukan. Coba username atau Gmail yang benar.";return;}const room=dmRoomId(chatUser.id,member.id);status.textContent="Member ditemukan: "+member.username+". Membuka DM...";openDm(member.id,member.username,room);document.getElementById("dm-new-form").hidden=true;document.getElementById("dm-recipient").value="";});
 
 const roomNames={lobby:["Lobby","PUBLIC ROOM","Obrolan umum komunitas."],support:["Customer Support","SUPPORT ROOM","Bantuan pesanan dan pertanyaan."],informasi:["Informasi","INFORMATION ROOM","Pertanyaan tentang layanan toko."],produk:["Diskusi Produk","PRODUCT ROOM","Diskusikan produk STOGRA STORE."]};
 let authStateReady=false;
