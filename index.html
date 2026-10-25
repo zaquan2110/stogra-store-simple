@@ -799,7 +799,7 @@ async function initializeAuth(){
 initializeAuth();
 
 const productDetailOverlay = document.getElementById("product-detail-overlay");
-function tutupDetailProduk(){productDetailOverlay.classList.remove("show");document.body.classList.remove("auth-modal-open");}
+function tutupDetailProduk(){productDetailOverlay.classList.remove("show");productDetailOverlay.style.display="none";productDetailOverlay.setAttribute("aria-hidden","true");document.body.classList.remove("auth-modal-open");}
 document.getElementById("product-detail-close").addEventListener("click",tutupDetailProduk);
 document.getElementById("product-detail-close-bottom").addEventListener("click",tutupDetailProduk);
 productDetailOverlay.addEventListener("click",e=>{if(e.target===productDetailOverlay)tutupDetailProduk();});
@@ -812,7 +812,7 @@ function bukaDetailProduk(product){
  document.getElementById("product-detail-description").textContent=product.description||"Belum ada deskripsi detail. Hubungi staff untuk informasi lebih lanjut.";
  const img=document.getElementById("product-detail-image");
  if(product.image_url){img.src=product.image_url;img.alt=product.name||"Foto produk";img.hidden=false;img.onerror=()=>{img.hidden=true;};}else{img.removeAttribute("src");img.hidden=true;}
- productDetailOverlay.classList.add("show");document.body.classList.add("auth-modal-open");document.getElementById("product-detail-close").focus();
+ productDetailOverlay.style.display="flex";productDetailOverlay.classList.add("show");document.body.classList.add("auth-modal-open");productDetailOverlay.setAttribute("aria-hidden","false");document.getElementById("product-detail-close").focus();
 }
 async function muatProdukStogra() {
   if (!window.supabase || SUPABASE_PUBLISHABLE_KEY === "GANTI_DENGAN_PUBLISHABLE_KEY_KAMU") {
@@ -863,9 +863,10 @@ async function muatProdukStogra() {
     card.tabIndex = 0;
     card.setAttribute("role", "button");
     card.setAttribute("aria-label", "Lihat detail " + (product.name || "produk"));
-    card.addEventListener("click", () => {
+    card.onclick = function () {
       bukaDetailProduk(product);
-    });
+    };
+    card.style.cursor = "pointer";
     card.addEventListener("keydown", (event) => {
       if (event.target === card && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); bukaDetailProduk(product); }
     });
@@ -900,11 +901,12 @@ async function muatProdukStogra() {
     const link = buatElemen("a", "btn", "Tanya Staff →");
     link.href = "#produk";
     link.removeAttribute("target");
-    link.addEventListener("click", (event) => {
+    link.onclick = function (event) {
       event.preventDefault();
       event.stopPropagation();
       bukaDetailProduk(product);
-    });
+      return false;
+    };
     card.appendChild(link);
 
     grid.appendChild(card);
