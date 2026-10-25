@@ -52,6 +52,24 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
 .note{font-size:12px;color:#888;margin-top:22px}
 #catalog-message{padding:18px;border:1px solid #292929;border-radius:10px;color:#aaa;line-height:1.7}
 
+.admin-nav{border-color:#652028;color:#ff6871!important;background:#170b0d}
+.announcement-list{display:grid;gap:15px}
+.announcement-card{padding:22px;border:1px solid #292929;border-radius:13px;background:linear-gradient(160deg,#151515,#0d0d0d)}
+.announcement-card h3{margin:16px 0 8px;font-size:20px}
+.announcement-card p{color:#aaa;line-height:1.8;margin-bottom:0}
+.announcement-top{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.announcement-date{font-size:10px;color:#ff6871;letter-spacing:.14em;font-weight:900}
+.admin-login-wrap{width:min(460px,100%);margin:35px auto;padding:30px;border:1px solid #652028;border-radius:18px;background:linear-gradient(145deg,#1e090c,#101010 70%);box-shadow:0 20px 70px #a000181c}
+.admin-emblem{display:grid;place-items:center;width:54px;height:54px;border-radius:14px;background:#ff303b;color:#fff;font-size:26px;font-weight:950;margin-bottom:22px;box-shadow:0 0 30px #ff303b30}
+.admin-login-wrap h2{font-size:32px;margin:10px 0}
+.admin-form{display:grid;gap:10px;margin-top:24px}
+.admin-form label{font-size:13px;color:#ddd;font-weight:700;margin-top:7px}
+.admin-form input{width:100%;padding:13px 14px;border:1px solid #3b3030;border-radius:9px;background:#090909;color:#fff;font:inherit;outline:none}
+.admin-form input:focus{border-color:#ff4652}
+.admin-form button{justify-content:center;margin-top:10px}
+#admin-login-message{font-size:13px;line-height:1.6;color:#ff9ca2}
+.admin-security-note{font-size:12px;line-height:1.7;color:#888;border-top:1px solid #ffffff17;padding-top:16px;margin-top:22px}
+.admin-back{display:inline-block;color:#ff6871;font-size:13px;font-weight:800;margin-top:16px}
 .screen{display:none;min-height:65vh}.screen.active{display:block}
 .screen-nav{align-items:center}
 .nav-item{font:inherit;color:#bbb;background:transparent;border:1px solid transparent;border-radius:8px;padding:9px 12px;cursor:pointer}
@@ -103,6 +121,8 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
       <button class="nav-item" data-screen="produk">Produk</button>
       <button class="nav-item" data-screen="informasi">Informasi</button>
       <button class="nav-item" data-screen="komunikasi">Komunikasi</button>
+      <button class="nav-item" data-screen="pengumuman">Pengumuman</button>
+      <button class="nav-item admin-nav" data-screen="admin">Login Admin ↗</button>
     </div>
   </nav>
 </header>
@@ -161,6 +181,35 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
     </div>
   </section>
 
+  <section id="screen-pengumuman" class="screen section wrap">
+    <div class="section-head"><small>OFFICIAL ANNOUNCEMENTS</small><h2>Pusat Pengumuman</h2><p class="sub">Informasi penting dan pembaruan resmi STOGRA STORE.</p></div>
+    <div class="announcement-list">
+      <article class="announcement-card"><div class="announcement-top"><span class="tag">INFORMASI TOKO</span><span class="announcement-date">INFO</span></div><h3>Selamat datang di STOGRA STORE</h3><p>Gunakan katalog untuk melihat produk yang tersedia. Untuk konfirmasi harga, detail produk, dan pemesanan, hubungi staff melalui Discord resmi.</p></article>
+      <article class="announcement-card"><div class="announcement-top"><span class="tag">KEAMANAN</span><span class="announcement-date">PENTING</span></div><h3>Pastikan komunikasi melalui kanal resmi</h3><p>Jangan membagikan kata sandi atau informasi sensitif. Konfirmasikan detail pesanan dan instruksi pembayaran dengan staff sebelum melakukan transaksi.</p></article>
+      <article class="announcement-card"><div class="announcement-top"><span class="tag">PEMBARUAN WEBSITE</span><span class="announcement-date">UPDATE</span></div><h3>Katalog digital STOGRA STORE</h3><p>Website sedang dikembangkan dengan katalog, pusat informasi, komunikasi, dan area admin. Fitur baru akan diumumkan setelah siap digunakan.</p></article>
+    </div>
+    <div class="notice"><strong>Catatan</strong><p>Pengumuman pada tahap ini masih berupa konten awal di website. Pengelolaan pengumuman melalui panel admin akan diaktifkan setelah autentikasi dan izin database selesai dikonfigurasi.</p></div>
+  </section>
+
+  <section id="screen-admin" class="screen section wrap">
+    <div class="admin-login-wrap">
+      <div class="admin-emblem">S</div>
+      <div class="eyebrow">RESTRICTED AREA</div>
+      <h2>Admin <span class="red">STOGRA</span></h2>
+      <p class="sub">Area khusus pengelola toko. Login admin memerlukan akun yang disiapkan melalui Supabase Authentication.</p>
+      <form id="admin-login-form" class="admin-form">
+        <label for="admin-email">Email admin</label>
+        <input id="admin-email" name="email" type="email" autocomplete="username" placeholder="Masukkan email admin" required>
+        <label for="admin-password">Password</label>
+        <input id="admin-password" name="password" type="password" autocomplete="current-password" placeholder="Masukkan password" required>
+        <button class="btn primary" type="submit" id="admin-login-submit">Login Admin →</button>
+        <p id="admin-login-message" role="status" aria-live="polite"></p>
+      </form>
+      <p class="admin-security-note">Login saja tidak otomatis memberikan hak admin. Akses panel dan perubahan data harus dilindungi role admin serta kebijakan RLS di database.</p>
+      <a class="admin-back" href="#lobby" data-go="lobby">← Kembali ke Lobby</a>
+    </div>
+  </section>
+
   <section id="screen-komunikasi" class="screen section wrap">
     <div class="section-head"><small>COMMUNICATION HUB</small><h2>Ruang Komunikasi</h2><p class="sub">Pilih jalur komunikasi sesuai kebutuhanmu.</p></div>
     <div class="grid communication-grid">
@@ -216,6 +265,11 @@ document.querySelectorAll("[data-screen]").forEach((button) => {
 });
 document.querySelectorAll("[data-go]").forEach((button) => {
   button.addEventListener("click", () => bukaScreen(button.dataset.go));
+});
+document.getElementById("admin-login-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const status = document.getElementById("admin-login-message");
+  status.textContent = "Form login sudah tersedia, tetapi autentikasi dan verifikasi role admin belum dikonfigurasi. Belum ada akses admin yang diberikan.";
 });
 document.getElementById("refresh-products").addEventListener("click", () => {
   window.__stograProductsLoaded = false;
@@ -306,7 +360,7 @@ async function muatProdukStogra() {
 }
 
 const initialScreen = location.hash.replace("#", "");
-bukaScreen(["lobby","produk","informasi","komunikasi"].includes(initialScreen) ? initialScreen : "lobby");
+bukaScreen(["lobby","produk","informasi","komunikasi","pengumuman","admin"].includes(initialScreen) ? initialScreen : "lobby");
 muatProdukStogra();
 </script>
 </body>
