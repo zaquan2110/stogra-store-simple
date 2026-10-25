@@ -19,13 +19,13 @@ header{position:sticky;top:0;z-index:5;background:#080808ef;border-bottom:1px so
 nav{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px 0}
 .nav-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;min-width:0}
 .header-clock{position:relative;display:flex;align-items:center;gap:8px;padding:6px 9px;border:1px solid #4b2025;border-radius:9px;background:#120b0c;font-variant-numeric:tabular-nums}
-.header-clock-dot{width:7px;height:7px;border-radius:50%;background:#ff303b;box-shadow:0 0 9px #ff303b;flex:none}
+.header-clock-dot{width:7px;height:7px;border-radius:50%;background:#ff303b;box-shadow:0 0 9px #ff303b;flex:none}.wifi-status{display:block;max-width:250px;font-size:11px;text-align:right;line-height:1.4;color:#79e6a3;padding:3px 7px;border-radius:6px;border:1px solid #245637;background:#09150e}.wifi-status.poor{color:#ff777f;border-color:#7a252d;background:#1b090b;font-weight:800}
 .header-clock-label{font-size:9px;letter-spacing:.12em;color:#aaa;font-weight:800}
 #header-local-clock{font-size:17px;font-weight:950;color:#fff;min-width:72px}
-.header-world-toggle{border:1px solid #512027;background:#241014;color:#ff6871;border-radius:6px;padding:5px 7px;cursor:pointer}
-.header-world-panel{position:absolute;right:0;top:calc(100% + 8px);z-index:30;width:225px;padding:10px;border:1px solid #652028;border-radius:10px;background:#0b0b0b;box-shadow:0 15px 40px #000c}
-.header-world-item{display:flex;justify-content:space-between;gap:10px;padding:8px 4px;border-bottom:1px solid #ffffff12;font-size:12px}
-.header-world-item:last-child{border-bottom:0}.header-world-item span{color:#aaa}.header-world-item time{color:#ff6871;font-weight:900;font-variant-numeric:tabular-nums}
+
+
+
+.header-world-item span{color:#aaa}.header-world-item time{color:#ff6871;font-weight:900;font-variant-numeric:tabular-nums}
 
 .brand{font-weight:950;letter-spacing:.08em}
 .brand span,.red{color:var(--red)}
@@ -83,7 +83,7 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
 .dm-new-form label,.dm-new-form p{font-size:10px;color:#aaa;margin:0;overflow-wrap:anywhere}
 .dm-new-form input{width:100%;min-width:0;box-sizing:border-box;background:#111;border:1px solid #393030;color:#fff;border-radius:6px;padding:9px}
 .dm-new-form .btn{padding:8px;font-size:11px}
-.world-clock-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:22px}.world-clock-card{border:1px solid #352126;background:linear-gradient(145deg,#171010,#0b0b0b);border-radius:12px;padding:16px;min-width:0}.world-clock-card strong{display:block;font-size:13px}.world-clock-card time{display:block;color:#ff6069;font-size:clamp(18px,3vw,25px);font-weight:900;margin:8px 0;font-variant-numeric:tabular-nums}.world-clock-card small{color:#999;font-size:11px}.clock-note{color:#888;font-size:12px;line-height:1.6;margin-top:14px}
+
 .dm-list{display:flex;flex-direction:column;gap:5px;max-height:180px;overflow:auto}
 .dm-list small{color:#888;font-size:10px;line-height:1.5}
 .dm-contact{display:block;width:100%;text-align:left;background:#111;border:1px solid #302323;border-radius:7px;padding:9px;color:#eee;cursor:pointer;overflow-wrap:anywhere}
@@ -197,7 +197,7 @@ body.auth-modal-open{overflow:hidden}
  #header-local-clock{font-size:15px;min-width:65px}
  .screen-nav{justify-content:flex-end}
 }
-@media(max-width:560px){.world-clock-grid{grid-template-columns:1fr 1fr}}\n</style>
+@media(max-width:560px){}\n</style>
 </head>
 
 <body>
@@ -209,8 +209,7 @@ body.auth-modal-open{overflow:hidden}
         <span class="header-clock-dot"></span>
         <span class="header-clock-label">WAKTU LOKAL</span>
         <time id="header-local-clock">--:--:--</time>
-        <button type="button" id="header-world-toggle" class="header-world-toggle" aria-expanded="false" aria-controls="header-world-panel" title="Lihat waktu kota lain">🌐</button>
-        <div id="header-world-panel" class="header-world-panel" hidden></div>
+        <span id="wifi-status" class="wifi-status" role="status" aria-live="polite">● Memeriksa koneksi…</span>
       </div>
       <div class="links screen-nav" aria-label="Navigasi utama">
       <button class="nav-item active" data-screen="lobby">Lobby</button>
@@ -363,71 +362,19 @@ body.auth-modal-open{overflow:hidden}
   </section>
 </main>
 
-<section class="section" id="jam-dunia"><div class="wrap"><div class="section-head"><small>WORLD CLOCK</small><h2>Jam <span class="red">Dunia</span></h2><p class="sub">Waktu lokal real-time di berbagai kota dunia.</p></div><div class="world-clock-grid" id="world-clock-grid"><div class="world-clock-card"><strong>Memuat jam dunia…</strong></div></div><p class="clock-note">Jam mengikuti zona waktu resmi masing-masing kota dan diperbarui otomatis di perangkat Anda.</p></div></section>
+
 
 <footer>
   <div class="wrap">© <span id="year"></span> STOGRA STORE. All rights reserved.</div>
 </footer>
 
 <script>
-document.getElementById("year").textContent = new Date().getFullYear();
-
-const WORLD_CLOCKS = [
-  {city:"Jakarta",zone:"Asia/Jakarta"},
-  {city:"Singapore",zone:"Asia/Singapore"},
-  {city:"Tokyo",zone:"Asia/Tokyo"},
-  {city:"Dubai",zone:"Asia/Dubai"},
-  {city:"London",zone:"Europe/London"},
-  {city:"New York",zone:"America/New_York"},
-  {city:"Los Angeles",zone:"America/Los_Angeles"},
-  {city:"Sydney",zone:"Australia/Sydney"}
-];
-const HEADER_CLOCKS = [
- {city:"Jakarta",zone:"Asia/Jakarta"},
- {city:"Singapore",zone:"Asia/Singapore"},
- {city:"Tokyo",zone:"Asia/Tokyo"},
- {city:"Dubai",zone:"Asia/Dubai"},
- {city:"London",zone:"Europe/London"},
- {city:"New York",zone:"America/New_York"},
- {city:"Los Angeles",zone:"America/Los_Angeles"},
- {city:"Sydney",zone:"Australia/Sydney"}
-];
-function updateHeaderClock(){
- const now=new Date();
- const local=document.getElementById("header-local-clock");
- if(local){
-  local.textContent=new Intl.DateTimeFormat("id-ID",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(now);
-  local.dateTime=now.toISOString();
- }
- const panel=document.getElementById("header-world-panel");
- if(panel){
-  panel.replaceChildren();
-  HEADER_CLOCKS.forEach(item=>{
-   const row=document.createElement("div");row.className="header-world-item";
-   const city=document.createElement("span");city.textContent=item.city;
-   const time=document.createElement("time");time.textContent=new Intl.DateTimeFormat("id-ID",{timeZone:item.zone,hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(now);
-   row.append(city,time);panel.append(row);
-  });
- }
-}
-document.getElementById("header-world-toggle").addEventListener("click",()=>{
- const panel=document.getElementById("header-world-panel"),button=document.getElementById("header-world-toggle");
- panel.hidden=!panel.hidden;button.setAttribute("aria-expanded",String(!panel.hidden));
-});
+document.getElementById("year").textContent=new Date().getFullYear();
+function updateHeaderClock(){const now=new Date(),local=document.getElementById("header-local-clock");if(local){local.textContent=new Intl.DateTimeFormat("id-ID",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(now);local.dateTime=now.toISOString();}}
 updateHeaderClock();setInterval(updateHeaderClock,1000);
-function updateWorldClocks(){
- const grid=document.getElementById("world-clock-grid");if(!grid)return;
- grid.replaceChildren();
- WORLD_CLOCKS.forEach(item=>{
-  const card=document.createElement("div");card.className="world-clock-card";
-  const name=document.createElement("strong");name.textContent=item.city;
-  const time=document.createElement("time");time.dateTime=new Date().toISOString();
-  time.textContent=new Intl.DateTimeFormat("id-ID",{timeZone:item.zone,hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(new Date());
-  const date=document.createElement("small");date.textContent=new Intl.DateTimeFormat("id-ID",{timeZone:item.zone,weekday:"short",day:"2-digit",month:"short",year:"numeric"}).format(new Date());
-  card.append(name,time,date);grid.append(card);
- });
-}
-updateWorldClocks();setInterval(updateWorldClocks,1000);
+const wifiStatus=document.getElementById("wifi-status");
+function updateNetworkStatus(){if(!wifiStatus)return;if(!navigator.onLine){wifiStatus.textContent="⚠ Internet terputus";wifiStatus.className="wifi-status poor";return;}const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;if(!c){wifiStatus.textContent="● Internet tersambung";wifiStatus.className="wifi-status good";wifiStatus.title="Browser ini hanya mendukung pemeriksaan online/offline, bukan kekuatan sinyal Wi-Fi.";return;}const slow=["slow-2g","2g"].includes(c.effectiveType)||(typeof c.downlink==="number"&&c.downlink<1)||(typeof c.rtt==="number"&&c.rtt>500);if(slow){wifiStatus.textContent="⚠ Koneksi lambat"+(c.effectiveType?" · "+c.effectiveType.toUpperCase():"")+(typeof c.downlink==="number"?" · "+c.downlink+" Mbps":"");wifiStatus.className="wifi-status poor";wifiStatus.title="Periksa router/Wi-Fi atau pindah ke jaringan yang lebih stabil.";}else{wifiStatus.textContent="● Internet tersambung";wifiStatus.className="wifi-status good";wifiStatus.title="Browser melaporkan koneksi aktif; bukan pengukuran kekuatan sinyal Wi-Fi.";}}
+updateNetworkStatus();window.addEventListener("online",updateNetworkStatus);window.addEventListener("offline",updateNetworkStatus);const ni=navigator.connection||navigator.mozConnection||navigator.webkitConnection;if(ni&&ni.addEventListener)ni.addEventListener("change",updateNetworkStatus);
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
