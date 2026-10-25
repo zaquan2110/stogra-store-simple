@@ -253,7 +253,7 @@ footer{padding:28px 0;text-align:center;color:#777;font-size:13px;border-top:1px
         <p id="member-auth-message" class="member-auth-message" role="status" aria-live="polite"></p>
       </form>
       <div class="member-login-divider">ATAU MASUK DENGAN</div>
-      <div id="profile-account" class="profile-account"><img id="profile-avatar" class="profile-avatar" alt="Foto profil akun"><div><strong id="profile-name">Member</strong><span id="profile-email"></span></div></div><div class="profile-actions" id="profile-login-actions"><button class="btn primary" id="google-login">Lanjutkan dengan Google</button><button class="btn" id="discord-login">Lanjutkan dengan Discord</button></div><div class="profile-actions" id="profile-user-actions" hidden><button class="btn" id="staff-help">Bantuan Staff/Admin ↗</button><button class="btn" id="google-logout" hidden>Logout</button></div><p class="note">Status akun diperbarui otomatis setelah sesi login berhasil diverifikasi.</p></div>
+      <div id="profile-account" class="profile-account"><img id="profile-avatar" class="profile-avatar" alt="Foto profil akun"><div><strong id="profile-name">Member</strong><span id="profile-email"></span></div></div><div class="profile-actions" id="profile-login-actions"><button class="btn primary" id="google-login">Lanjutkan dengan Google</button><button class="btn" id="discord-login">Lanjutkan dengan Discord</button></div><div class="profile-actions" id="profile-user-actions" hidden><button class="btn" id="google-logout" hidden>Logout</button></div><p class="member-signup-prompt">Butuh bantuan? <button type="button" class="text-link" id="staff-help">Bantuan Staff/Admin ↗</button></p><p class="note">Status akun diperbarui otomatis setelah sesi login berhasil diverifikasi.</p></div>
   </section>
 
   <section id="screen-admin" class="screen section wrap">
@@ -377,6 +377,8 @@ function setChatUser(user){
    const avatar=document.getElementById("profile-avatar"), avatarUrl=meta.avatar_url||meta.picture||"";
    if(avatarUrl){avatar.src=avatarUrl;avatar.hidden=false;}else{avatar.removeAttribute("src");avatar.hidden=true;}
    account.classList.add("visible");
+   // Setelah sesi login terverifikasi, langsung tampilkan halaman akun/profil.
+   if(authStateReady && !document.getElementById("screen-profil").classList.contains("active")) bukaScreen("profil", false);
  }else{
    account.classList.remove("visible");
  }
@@ -399,13 +401,15 @@ document.getElementById("member-show-password").addEventListener("change", (even
 });
 let memberAuthMode = "login";
 document.getElementById("member-show-signup").addEventListener("click", () => {
-  memberAuthMode = "signup";
-  const submit = document.getElementById("member-login-form").querySelector('button[type="submit"]');
-  submit.textContent = "Buat Akun";
-  document.getElementById("member-password").autocomplete = "new-password";
-  document.getElementById("member-show-signup").textContent = "Kembali ke Login";
-  document.querySelector(".member-signup-prompt").firstChild.textContent = "Sudah punya akun? ";
-  document.getElementById("member-auth-message").textContent = "Gunakan email aktif. Supabase mungkin mengirim email verifikasi sebelum akun bisa digunakan.";
+  const submit = document.getElementById("member-email-login");
+  const link = document.getElementById("member-show-signup");
+  const prompt = document.querySelector("#member-login-form .member-signup-prompt");
+  memberAuthMode = memberAuthMode === "login" ? "signup" : "login";
+  submit.textContent = memberAuthMode === "signup" ? "Buat Akun" : "Login";
+  document.getElementById("member-password").autocomplete = memberAuthMode === "signup" ? "new-password" : "current-password";
+  link.textContent = memberAuthMode === "signup" ? "Kembali ke Login" : "Buat akun";
+  prompt.firstChild.textContent = memberAuthMode === "signup" ? "Sudah punya akun? " : "Belum punya akun? ";
+  document.getElementById("member-auth-message").textContent = memberAuthMode === "signup" ? "Gunakan email aktif. Supabase mungkin mengirim email verifikasi sebelum akun bisa digunakan." : "";
 });
 document.getElementById("member-login-form").addEventListener("submit", async (event) => {
   event.preventDefault();
