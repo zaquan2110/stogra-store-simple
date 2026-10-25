@@ -331,12 +331,16 @@ const chatSupabase = window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHA
 let chatUser=null, chatRoom="lobby";
 const roomNames={lobby:["Lobby","PUBLIC ROOM","Obrolan umum komunitas."],support:["Customer Support","SUPPORT ROOM","Bantuan pesanan dan pertanyaan."],informasi:["Informasi","INFORMATION ROOM","Pertanyaan tentang layanan toko."],produk:["Diskusi Produk","PRODUCT ROOM","Diskusikan produk STOGRA STORE."]};
 let authStateReady=false;
+let authUpdateVersion=0;
 function setChatUser(user){
+ const version=++authUpdateVersion;
  chatUser=user||null;
  const status=document.getElementById("profile-status"), state=document.getElementById("chat-user-state"), loginActions=document.getElementById("profile-login-actions"), userActions=document.getElementById("profile-user-actions"), logout=document.getElementById("google-logout"), input=document.getElementById("chat-input"), send=document.getElementById("chat-send"), account=document.getElementById("profile-account");
  if(!status)return;
  const loggedIn=!!chatUser;
- status.textContent=!authStateReady?"Memverifikasi sesi akun...":loggedIn?"Berhasil login — akun terhubung.":"Belum login";
+ // Update every login indicator together so the profile and chat cannot show conflicting states.
+ status.textContent=!authStateReady?"Memverifikasi sesi akun...":loggedIn?"Login berhasil · Akun terhubung":"Belum login";
+ status.dataset.authState=loggedIn?"authenticated":authStateReady?"anonymous":"checking";
  loginActions.hidden=loggedIn;userActions.hidden=!loggedIn;logout.hidden=!loggedIn;
  if(loggedIn){
    const meta=chatUser.user_metadata||{}, provider=chatUser.app_metadata?.provider||"akun";
@@ -349,9 +353,10 @@ function setChatUser(user){
  }else{
    account.classList.remove("visible");
  }
- state.textContent=loggedIn?"Login: "+(chatUser.email||"akun "+(chatUser.app_metadata?.provider||"member")):"Login Google atau Discord diperlukan untuk mengirim pesan.";
+ state.textContent=!authStateReady?"Memverifikasi sesi...":loggedIn?"Login: "+(chatUser.email||"akun "+(chatUser.app_metadata?.provider||"member")):"Belum login — masuk untuk mengirim pesan.";
  input.disabled=!loggedIn;send.disabled=!loggedIn;
- if(loggedIn)loadChat();else document.getElementById("chat-messages").innerHTML='<div class="chat-empty"><strong>Login untuk memulai chat</strong><p>Katalog tetap bisa dilihat tanpa login.</p></div>';
+ if(loggedIn){loadChat();}
+ else document.getElementById("chat-messages").innerHTML='<div class="chat-empty"><strong>Login untuk memulai chat</strong><p>Katalog tetap bisa dilihat tanpa login.</p></div>';
 }
 async function loadChat(){
  const box=document.getElementById("chat-messages"),foot=document.getElementById("chat-footnote");
@@ -370,11 +375,18 @@ chatSupabase.auth.onAuthStateChange((event,session)=>{
   authStateReady=true;
   setChatUser(session?.user||null);
 });
+// Read the persisted session first; ignore a slower initial read if a newer auth event arrived.
+const sessionReadVersion=authUpdateVersion;
 chatSupabase.auth.getSession().then(({data,error})=>{
+  if(authUpdateVersion!==sessionReadVersion)return;
   authStateReady=true;
-  if(error)document.getElementById("profile-status").textContent="Sesi belum dapat diverifikasi. Muat ulang halaman atau login kembali.";
+  if(error){
+    document.getElementById("profile-status").textContent="Sesi belum dapat diverifikasi. Muat ulang halaman atau login kembali.";
+    return;
+  }
   setChatUser(data?.session?.user||null);
 }).catch(()=>{
+  if(authUpdateVersion!==sessionReadVersion)return;
   authStateReady=true;
   setChatUser(null);
 });
