@@ -317,6 +317,17 @@ header nav.wrap{max-width:1280px;min-height:76px}
 }
 @media(prefers-reduced-motion:reduce){.product,.btn,.nav-item{transition:none}}
 
+
+/* Final interaction polish */
+.product-detail-overlay{overscroll-behavior:contain}
+.product-detail-panel{overscroll-behavior:contain}
+.product-detail-overlay[aria-hidden="true"]{visibility:hidden;pointer-events:none}
+.product-detail-overlay.show[aria-hidden="false"]{visibility:visible;pointer-events:auto}
+#product-grid .product{cursor:pointer}
+#product-grid .product:focus-visible{outline:2px solid #f04452;outline-offset:3px}
+.reset-local-data{max-width:calc(100vw - 28px);white-space:nowrap}
+@media(max-width:640px){.reset-local-data{max-width:calc(100vw - 20px);font-size:10px}}
+
 </style>
 </head>
 
@@ -893,33 +904,80 @@ async function initializeAuth(){
 initializeAuth();
 
 const productDetailOverlay = document.getElementById("product-detail-overlay");
-// Stable delegated handler: product cards use their original array index, not rendered title text.
-document.addEventListener("click", function(event) {
+let lastProductTrigger = null;
+
+function tutupDetailProduk() {
+  if (!productDetailOverlay || !productDetailOverlay.classList.contains("show")) return;
+  productDetailOverlay.classList.remove("show");
+  productDetailOverlay.style.display = "none";
+  productDetailOverlay.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("auth-modal-open");
+  document.body.style.overflow = "";
+  if (lastProductTrigger && document.contains(lastProductTrigger)) lastProductTrigger.focus();
+}
+
+document.getElementById("product-detail-close")?.addEventListener("click", tutupDetailProduk);
+document.getElementById("product-detail-close-bottom")?.addEventListener("click", tutupDetailProduk);
+productDetailOverlay?.addEventListener("click", event => {
+  if (event.target === productDetailOverlay) tutupDetailProduk();
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && productDetailOverlay?.classList.contains("show")) tutupDetailProduk();
+});
+
+// One reliable click route for cards and their "Tanya Staff" detail action.
+document.getElementById("product-grid")?.addEventListener("click", event => {
   const target = event.target instanceof Element ? event.target : event.target?.parentElement;
-  const card = target?.closest("#product-grid .product");
+  const card = target?.closest(".product");
   if (!card) return;
-  const index = Number(card.dataset.productIndex);
-  const product = (window.__stograProductItems || [])[index];
+  const items = window.__stograProductItems || [];
+  const product = items[Number(card.dataset.productIndex)];
   if (!product) return;
   event.preventDefault();
-  event.stopPropagation();
+  lastProductTrigger = target?.closest("button,a") || card;
   bukaDetailProduk(product);
-}, true);
-function tutupDetailProduk(){productDetailOverlay.classList.remove("show");productDetailOverlay.style.display="none";productDetailOverlay.setAttribute("aria-hidden","true");document.body.classList.remove("auth-modal-open");}
-document.getElementById("product-detail-close").addEventListener("click",tutupDetailProduk);
-document.getElementById("product-detail-close-bottom").addEventListener("click",tutupDetailProduk);
-productDetailOverlay.addEventListener("click",e=>{if(e.target===productDetailOverlay)tutupDetailProduk();});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&productDetailOverlay.classList.contains("show"))tutupDetailProduk();});
-function bukaDetailProduk(product){
- if (!product || !productDetailOverlay) return;
- document.getElementById("product-detail-category").textContent=product.category||"PRODUK";
- document.getElementById("product-detail-title").textContent=product.name||"Produk STOGRA STORE";
- const price=Number(product.price);
- document.getElementById("product-detail-price").textContent=Number.isFinite(price)?new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(price):"Hubungi staff untuk harga";
- document.getElementById("product-detail-description").textContent=product.description||"Belum ada deskripsi detail. Hubungi staff untuk informasi lebih lanjut.";
- const img=document.getElementById("product-detail-image");
- if(product.image_url){img.src=product.image_url;img.alt=product.name||"Foto produk";img.hidden=false;img.onerror=()=>{img.hidden=true;};}else{img.removeAttribute("src");img.hidden=true;}
- productDetailOverlay.style.display="flex";productDetailOverlay.classList.add("show");document.body.classList.add("auth-modal-open");productDetailOverlay.setAttribute("aria-hidden","false");document.getElementById("product-detail-close").focus();
+});
+document.getElementById("product-grid")?.addEventListener("keydown", event => {
+  if (event.target?.classList?.contains("product") && (event.key === "Enter" || event.key === " ")) {
+    event.preventDefault();
+    event.target.click();
+  }
+});
+
+function bukaDetailProduk(product) {
+  if (!product || !productDetailOverlay) return;
+  const category = document.getElementById("product-detail-category");
+  const title = document.getElementById("product-detail-title");
+  const priceLabel = document.getElementById("product-detail-price");
+  const description = document.getElementById("product-detail-description");
+  const image = document.getElementById("product-detail-image");
+  if (!category || !title || !priceLabel || !description || !image) return;
+
+  category.textContent = product.category || "PRODUK";
+  title.textContent = product.name || "Produk STOGRA STORE";
+  const numericPrice = product.price === null || product.price === undefined || product.price === "" ? NaN : Number(product.price);
+  priceLabel.textContent = Number.isFinite(numericPrice) && numericPrice >= 0
+    ? new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(numericPrice)
+    : "Hubungi staff untuk harga";
+  description.textContent = product.description || "Belum ada deskripsi detail. Hubungi staff untuk informasi lebih lanjut.";
+
+  image.onerror = () => { image.hidden = true; };
+  if (product.image_url) {
+    image.src = product.image_url;
+    image.alt = product.name || "Foto produk";
+    image.hidden = false;
+  } else {
+    image.removeAttribute("src");
+    image.alt = "";
+    image.hidden = true;
+  }
+
+  productDetailOverlay.style.display = "flex";
+  productDetailOverlay.classList.add("show");
+  productDetailOverlay.setAttribute("aria-hidden", "false");
+  document.body.classList.add("auth-modal-open");
+  document.body.style.overflow = "hidden";
+  document.getElementById("product-detail-close")?.focus();
 }
 async function muatProdukStogra() {
   if (!window.supabase || SUPABASE_PUBLISHABLE_KEY === "GANTI_DENGAN_PUBLISHABLE_KEY_KAMU") {
@@ -1024,17 +1082,15 @@ async function muatProdukStogra() {
 
 
 function resetDataLokal() {
-  const lanjut = window.confirm("Reset preferensi lokal STOGRA STORE di perangkat ini? Pengaturan gerakan dan status pop-up akan direset. Produk, akun, pesanan, dan data server tidak akan dihapus.");
+  const lanjut = window.confirm("Reset pengaturan tampilan lokal di perangkat ini? Ini hanya mengatur ulang preferensi gerakan dan status pop-up. Produk, akun, pesanan, sesi login, dan data server tidak dihapus.");
   if (!lanjut) return;
   try {
     localStorage.removeItem("stograReduceMotion");
     sessionStorage.removeItem("stograRulesSeen");
   } catch (error) {
-    console.warn("Preferensi lokal tidak dapat diakses:", error);
+    window.alert("Browser memblokir akses ke penyimpanan lokal. Coba buka website dalam mode normal.");
+    return;
   }
-  const motionToggle = document.getElementById("reduce-motion-toggle");
-  if (motionToggle) motionToggle.checked = false;
-  document.documentElement.classList.remove("reduce-motion");
   window.location.reload();
 }
 document.getElementById("reset-local-data")?.addEventListener("click", resetDataLokal);
@@ -1045,7 +1101,7 @@ muatProdukStogra();
 </script>
 
 
-<button type="button" class="reset-local-data" id="reset-local-data" title="Reset preferensi lokal pada perangkat ini" aria-label="Reset data lokal">↻ Reset Data Lokal</button>
+<button type="button" class="reset-local-data" id="reset-local-data" title="Reset preferensi lokal pada perangkat ini" aria-label="Reset preferensi lokal">↻ Reset Preferensi</button>
 
 <div class="product-detail-overlay" id="product-detail-overlay" role="dialog" aria-modal="true" aria-labelledby="product-detail-title">
   <section class="product-detail-panel">
