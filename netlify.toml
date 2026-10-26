@@ -3,16 +3,16 @@
 [build]
   publish = "."
 
-# Security headers that do not interfere with Supabase or OAuth redirects.
+# Basic security headers; no Content-Security-Policy is imposed so configured
+# Supabase/CDN/OAuth integrations are not accidentally blocked.
 [[headers]]
   for = "/*"
   [headers.values]
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-Frame-Options = "DENY"
-    Permissions-Policy = "geolocation=(), camera=(), microphone=()"
 
-# Avoid stale HTML after a new GitHub commit; Netlify/CDN can still serve assets normally.
+# Ensure updated HTML is checked after a deployment instead of remaining stale.
 [[headers]]
   for = "/index.html"
   [headers.values]
