@@ -328,6 +328,9 @@ header nav.wrap{max-width:1280px;min-height:76px}
 .reset-local-data{max-width:calc(100vw - 28px);white-space:nowrap}
 @media(max-width:640px){.reset-local-data{max-width:calc(100vw - 20px);font-size:10px}}
 
+
+/* STOGRA Admin Control Center */
+#admin-workspace{display:grid;gap:18px}.admin-toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:20px;border:1px solid #652028;border-radius:14px;background:linear-gradient(130deg,#21090d,#101010)}.admin-toolbar p{margin:6px 0 0;color:#999;font-size:12px}.admin-online-dot{display:inline-block;width:8px;height:8px;background:#79e6a3;border-radius:50%;margin-right:9px;box-shadow:0 0 10px #79e6a3}.admin-metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.admin-metric,.admin-box{padding:20px;border:1px solid #292929;border-radius:13px;background:linear-gradient(160deg,#151515,#0d0d0d);min-width:0}.admin-metric span,.admin-metric strong{display:block}.admin-metric span{font-size:12px;color:#aaa}.admin-metric strong{font-size:30px;margin-top:10px;color:#ff6871}.admin-columns{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:16px;align-items:start}.admin-box-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}.admin-box-head small{color:#ff6871;letter-spacing:.14em;font-size:10px;font-weight:900}.admin-box-head h3{margin:6px 0 0}.admin-product-form{display:grid;gap:8px}.admin-product-form label,.admin-box>label{font-size:12px;color:#ddd;font-weight:750;margin-top:7px}.admin-product-form input,.admin-product-form textarea,.admin-product-form select,.admin-box>input{width:100%;min-width:0;background:#090909;border:1px solid #393030;color:#fff;border-radius:8px;padding:11px 12px;font:inherit}.admin-product-form textarea{resize:vertical;line-height:1.6}.admin-product-form input:focus,.admin-product-form textarea:focus,.admin-product-form select:focus,.admin-box>input:focus{outline:1px solid #ff4652;border-color:#ff4652}.admin-product-list{display:grid;gap:10px;margin-top:14px;max-height:760px;overflow:auto}.admin-product-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:12px;border:1px solid #2c2525;border-radius:10px;background:#0b0b0b}.admin-product-main{display:flex;align-items:center;gap:11px;min-width:0}.admin-product-main img,.admin-product-placeholder{width:52px;height:52px;flex:none;object-fit:cover;border-radius:8px;background:#1b0a0d;border:1px solid #4d1a21}.admin-product-placeholder{display:grid;place-items:center;color:#ff6871;font-weight:950;font-size:20px}.admin-product-info{min-width:0}.admin-product-info strong,.admin-product-info small{display:block;overflow-wrap:anywhere}.admin-product-info strong{font-size:13px}.admin-product-info small{font-size:10px;color:#999;margin-top:5px;line-height:1.5}.admin-status{display:inline-block;margin-top:6px;padding:3px 7px;border-radius:20px;border:1px solid #514343;color:#bbb;font-size:10px}.admin-status.is-active{color:#79e6a3;border-color:#245637;background:#09150e}.admin-product-actions{display:flex;gap:6px;flex-wrap:wrap}.admin-product-actions .btn{padding:8px 10px;font-size:11px}.admin-delete{border-color:#6e2027;color:#ff858c}.admin-error{color:#ff9ca2;line-height:1.7}.admin-warning{padding:17px;border:1px solid #5a3d20;border-radius:11px;background:#171108}.admin-warning p{margin:7px 0 0;color:#c7bba8;font-size:12px;line-height:1.7}.admin-warning code{color:#ffd7a0}@media(max-width:850px){.admin-columns{grid-template-columns:1fr}}@media(max-width:560px){.admin-metric-grid{grid-template-columns:1fr}.admin-product-row{grid-template-columns:1fr}.admin-product-actions{justify-content:flex-end}.admin-toolbar{align-items:flex-start}}
 </style>
 </head>
 
@@ -447,21 +450,44 @@ header nav.wrap{max-width:1280px;min-height:76px}
   </section>
 
   <section id="screen-admin" class="screen section wrap">
-    <div class="admin-login-wrap">
-      <div class="admin-emblem">S</div>
-      <div class="eyebrow">RESTRICTED AREA</div>
-      <h2>Admin <span class="red">STOGRA</span></h2>
-      <p class="sub">Area khusus pengelola toko. Login admin memerlukan akun yang disiapkan melalui Supabase Authentication.</p>
+    <div class="section-head"><small>STOGRA CONTROL CENTER</small><h2>Admin <span class="red">Dashboard</span></h2><p class="sub">Kelola katalog toko, pantau data, dan periksa status koneksi Supabase.</p></div>
+    <div id="admin-login-card" class="admin-login-wrap">
+      <div class="admin-emblem">S</div><div class="eyebrow">RESTRICTED AREA</div>
+      <h2>Masuk ke Panel Admin</h2><p class="sub">Gunakan akun yang sudah diberi role admin oleh pengelola Supabase.</p>
       <form id="admin-login-form" class="admin-form">
-        <label for="admin-email">Email admin</label>
-        <input id="admin-email" name="email" type="email" autocomplete="username" placeholder="Masukkan email admin" required>
-        <label for="admin-password">Password</label>
-        <input id="admin-password" name="password" type="password" autocomplete="current-password" placeholder="Masukkan password" required>
-        <button class="btn primary" type="submit" id="admin-login-submit">Login Admin →</button>
-        <p id="admin-login-message" role="status" aria-live="polite"></p>
-      </form>
-      <p class="admin-security-note">Login saja tidak otomatis memberikan hak admin. Akses panel dan perubahan data harus dilindungi role admin serta kebijakan RLS di database.</p>
+        <label for="admin-email">Email admin</label><input id="admin-email" name="email" type="email" autocomplete="username" placeholder="Email admin" required>
+        <label for="admin-password">Password</label><input id="admin-password" name="password" type="password" autocomplete="current-password" placeholder="Password" required>
+        <button class="btn primary" type="submit" id="admin-login-submit">Login Admin →</button><p id="admin-login-message" role="status" aria-live="polite"></p>
+      </form><p class="admin-security-note">Akses pengelolaan juga bergantung pada izin RLS di Supabase. Jangan pernah menaruh service-role key di website.</p>
       <a class="admin-back" href="#lobby" data-go="lobby">← Kembali ke Lobby</a>
+    </div>
+    <div id="admin-workspace" hidden>
+      <div class="admin-toolbar"><div><span class="admin-online-dot"></span><strong id="admin-welcome">Admin terverifikasi</strong><p id="admin-db-status">Memeriksa database…</p></div><button class="btn" id="admin-logout" type="button">Logout Admin</button></div>
+      <div class="admin-metric-grid">
+        <article class="admin-metric"><span>Total produk aktif</span><strong id="admin-stat-active">—</strong></article>
+        <article class="admin-metric"><span>Semua produk</span><strong id="admin-stat-total">—</strong></article>
+        <article class="admin-metric"><span>Kategori terpakai</span><strong id="admin-stat-categories">—</strong></article>
+      </div>
+      <div class="admin-columns">
+        <section class="admin-box"><div class="admin-box-head"><div><small>CATALOG MANAGEMENT</small><h3 id="admin-editor-title">Tambah Produk</h3></div><button class="btn" id="admin-product-reset" type="button">Form Baru</button></div>
+          <form id="admin-product-form" class="admin-product-form">
+            <input type="hidden" id="admin-product-original-slug">
+            <label for="admin-product-name">Nama produk *</label><input id="admin-product-name" maxlength="120" required placeholder="Contoh: Roblox UI Pack">
+            <label for="admin-product-slug">Slug unik *</label><input id="admin-product-slug" maxlength="140" required placeholder="roblox-ui-pack">
+            <label for="admin-product-category">Kategori *</label><input id="admin-product-category" maxlength="80" required placeholder="UI / Script / Map / Assets / Services">
+            <label for="admin-product-price">Harga (Rupiah)</label><input id="admin-product-price" type="number" min="0" step="1" placeholder="Kosongkan jika harga belum ditentukan">
+            <label for="admin-product-image">URL gambar</label><input id="admin-product-image" type="url" maxlength="1000" placeholder="https://...">
+            <label for="admin-product-description">Deskripsi</label><textarea id="admin-product-description" rows="4" maxlength="5000" placeholder="Jelaskan isi dan manfaat produk"></textarea>
+            <label for="admin-product-status">Status katalog</label><select id="admin-product-status"><option value="active">Aktif — tampil di website</option><option value="draft">Draft — tidak tampil</option><option value="inactive">Nonaktif — tidak tampil</option></select>
+            <button class="btn primary" id="admin-product-save" type="submit">Simpan Produk</button><p id="admin-product-message" role="status" aria-live="polite"></p>
+          </form>
+        </section>
+        <section class="admin-box"><div class="admin-box-head"><div><small>LIVE CATALOG</small><h3>Daftar Produk</h3></div><button class="btn" id="admin-products-refresh" type="button">↻ Muat Ulang</button></div>
+          <label for="admin-product-search">Cari produk</label><input id="admin-product-search" placeholder="Cari nama, slug, kategori…">
+          <div id="admin-product-list" class="admin-product-list"><p class="sub">Login admin untuk memuat katalog.</p></div>
+        </section>
+      </div>
+      <div class="admin-warning"><strong>Keamanan database</strong><p>Jika simpan/edit/hapus ditolak oleh Supabase, kebijakan Row Level Security (RLS) untuk tabel <code>products</code> perlu dikonfigurasi agar hanya admin tepercaya yang dapat mengubah data. Dashboard ini tidak akan melewati aturan database.</p></div>
     </div>
   </section>
 
@@ -708,37 +734,85 @@ document.getElementById("auth-required-overlay").addEventListener("click", (even
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") tutupPeringatanLogin();
 });
-document.getElementById("admin-login-form").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const form = event.currentTarget;
-  const status = document.getElementById("admin-login-message");
-  const submit = document.getElementById("admin-login-submit");
-  const email = document.getElementById("admin-email").value.trim();
-  const password = document.getElementById("admin-password").value;
-  submit.disabled = true;
-  status.textContent = "Memverifikasi akun admin...";
-  try {
-    const { data, error } = await chatSupabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-    const user = data?.user || data?.session?.user;
-    // Admin access must come from trusted app_metadata, never user-editable user_metadata.
-    if (user?.app_metadata?.role !== "admin") {
-      await chatSupabase.auth.signOut();
-      authStateReady = true;
-      setChatUser(null);
-      throw new Error("Akun ini belum memiliki izin admin.");
-    }
-    authStateReady = true;
-    setChatUser(user);
-    document.getElementById("admin-password").value = "";
-    status.textContent = "Identitas admin terverifikasi. Panel pengelolaan belum diaktifkan; konfigurasi izin database perlu diselesaikan terlebih dahulu.";
-  } catch (error) {
-    console.error("STOGRA admin login error:", error);
-    const detail = error?.message || "Kesalahan tidak diketahui.";
-    status.textContent = "Login admin gagal: " + detail;
-  } finally {
-    submit.disabled = false;
+let stograAdminUser = null;
+let stograAdminProducts = [];
+const adminEl = id => document.getElementById(id);
+function adminMessage(message, isError=false) {
+  const el=adminEl("admin-product-message"); if(el){el.textContent=message;el.style.color=isError?"#ff9ca2":"#79e6a3";}
+}
+function adminEscape(value) {
+  return String(value ?? "").replace(/[&<>"']/g, ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+function adminResetProductForm() {
+  adminEl("admin-product-form").reset();adminEl("admin-product-original-slug").value="";
+  adminEl("admin-editor-title").textContent="Tambah Produk";adminEl("admin-product-save").textContent="Simpan Produk";adminMessage("");
+}
+async function adminLoadProducts() {
+  const list=adminEl("admin-product-list"),status=adminEl("admin-db-status");
+  list.innerHTML='<p class="sub">Memuat katalog…</p>';status.textContent="Menghubungkan ke tabel products…";
+  const {data,error}=await chatSupabase.from("products").select("name,slug,category,description,price,image_url,status,created_at").order("created_at",{ascending:false}).limit(500);
+  if(error){list.innerHTML='<p class="admin-error">Gagal membaca tabel products: '+adminEscape(error.message)+'</p>';status.textContent="Koneksi database gagal atau izin SELECT belum tersedia.";adminMessage("Tidak dapat memuat katalog. Periksa tabel dan kebijakan RLS.",true);return;}
+  stograAdminProducts=data||[];status.textContent="Terhubung ke Supabase · "+stograAdminProducts.length+" produk terbaca.";
+  adminEl("admin-stat-total").textContent=stograAdminProducts.length;
+  adminEl("admin-stat-active").textContent=stograAdminProducts.filter(p=>p.status==="active").length;
+  adminEl("admin-stat-categories").textContent=new Set(stograAdminProducts.map(p=>(p.category||"").trim()).filter(Boolean)).size;
+  adminRenderProducts();
+}
+function adminRenderProducts() {
+  const query=(adminEl("admin-product-search").value||"").trim().toLowerCase();
+  const filtered=stograAdminProducts.filter(p=>[p.name,p.slug,p.category,p.status].some(v=>String(v||"").toLowerCase().includes(query)));
+  const list=adminEl("admin-product-list");
+  if(!filtered.length){list.innerHTML='<p class="sub">Tidak ada produk yang cocok. Gunakan form untuk menambahkan produk.</p>';return;}
+  list.innerHTML=filtered.map(p=>'<article class="admin-product-row"><div class="admin-product-main">'+(p.image_url?'<img src="'+adminEscape(p.image_url)+'" alt="" loading="lazy" onerror="this.hidden=true">':'<div class="admin-product-placeholder">S</div>')+'<div class="admin-product-info"><strong>'+adminEscape(p.name||"Tanpa nama")+'</strong><small>'+adminEscape(p.category||"Tanpa kategori")+' · '+adminEscape(p.slug||"")+'</small><span class="admin-status '+(p.status==="active"?"is-active":"")+'">'+adminEscape(p.status||"draft")+'</span></div></div><div class="admin-product-actions"><button class="btn admin-edit" type="button" data-edit-slug="'+adminEscape(p.slug)+'">Edit</button><button class="btn admin-delete" type="button" data-delete-slug="'+adminEscape(p.slug)+'">Hapus</button></div></article>').join("");
+}
+function adminStartEdit(slug) {
+  const p=stograAdminProducts.find(x=>x.slug===slug);if(!p)return;
+  adminEl("admin-product-original-slug").value=p.slug||"";adminEl("admin-product-name").value=p.name||"";adminEl("admin-product-slug").value=p.slug||"";adminEl("admin-product-category").value=p.category||"";adminEl("admin-product-price").value=p.price??"";adminEl("admin-product-image").value=p.image_url||"";adminEl("admin-product-description").value=p.description||"";adminEl("admin-product-status").value=p.status||"draft";adminEl("admin-editor-title").textContent="Edit Produk";adminEl("admin-product-save").textContent="Simpan Perubahan";adminMessage("");adminEl("admin-product-name").focus();
+}
+adminEl("admin-login-form").addEventListener("submit", async event=>{
+  event.preventDefault();const status=adminEl("admin-login-message"),submit=adminEl("admin-login-submit");
+  submit.disabled=true;status.textContent="Memverifikasi akun admin…";
+  try{
+    const {data,error}=await chatSupabase.auth.signInWithPassword({email:adminEl("admin-email").value.trim(),password:adminEl("admin-password").value});
+    if(error)throw error;const user=data?.user||data?.session?.user;
+    if(user?.app_metadata?.role!=="admin"){await chatSupabase.auth.signOut();authStateReady=true;setChatUser(null);throw new Error("Akun belum memiliki role admin. Minta pengelola mengatur app_metadata.role = admin.");}
+    stograAdminUser=user;authStateReady=true;setChatUser(user);adminEl("admin-password").value="";adminEl("admin-login-card").hidden=true;adminEl("admin-workspace").hidden=false;
+    adminEl("admin-welcome").textContent="Admin: "+(user.email||"Akun terverifikasi");status.textContent="";await adminLoadProducts();
+  }catch(error){console.error("STOGRA admin login error:",error);status.textContent="Login admin gagal: "+(error?.message||"Kesalahan tidak diketahui.");}
+  finally{submit.disabled=false;}
+});
+adminEl("admin-product-form").addEventListener("submit",async event=>{
+  event.preventDefault();if(!stograAdminUser||stograAdminUser.app_metadata?.role!=="admin"){adminMessage("Sesi admin tidak valid. Login kembali.",true);return;}
+  const save=adminEl("admin-product-save");save.disabled=true;adminMessage("Menyimpan produk…");
+  const name=adminEl("admin-product-name").value.trim(),slug=adminEl("admin-product-slug").value.trim().toLowerCase().replace(/[^a-z0-9-]/g,"-").replace(/-+/g,"-").replace(/^-|-$/g,""),category=adminEl("admin-product-category").value.trim(),priceRaw=adminEl("admin-product-price").value;
+  if(!name||!slug||!category){adminMessage("Nama, slug, dan kategori wajib diisi.",true);save.disabled=false;return;}
+  const price=priceRaw===""?null:Number(priceRaw);if(price!==null&&(!Number.isFinite(price)||price<0)){adminMessage("Harga harus angka nol atau lebih.",true);save.disabled=false;return;}
+  const payload={name,slug,category,price,image_url:adminEl("admin-product-image").value.trim()||null,description:adminEl("admin-product-description").value.trim(),status:adminEl("admin-product-status").value};
+  const originalSlug=adminEl("admin-product-original-slug").value;
+  try{
+    let result;
+    if(originalSlug){result=await chatSupabase.from("products").update(payload).eq("slug",originalSlug).select("slug");}
+    else{result=await chatSupabase.from("products").insert(payload).select("slug");}
+    if(result.error)throw result.error;
+    if(!result.data?.length)throw new Error("Tidak ada baris berubah. Periksa kebijakan RLS dan izin UPDATE/INSERT.");
+    adminResetProductForm();await adminLoadProducts();adminMessage(originalSlug?"Produk berhasil diperbarui.":"Produk berhasil ditambahkan.");
+  }catch(error){console.error("STOGRA product save error:",error);adminMessage("Gagal menyimpan: "+(error?.message||"Periksa izin RLS dan kolom tabel products."),true);}
+  finally{save.disabled=false;}
+});
+adminEl("admin-product-list").addEventListener("click",async event=>{
+  const edit=event.target.closest("[data-edit-slug]"),del=event.target.closest("[data-delete-slug]");
+  if(edit){adminStartEdit(edit.dataset.editSlug);return;}
+  if(del){const slug=del.dataset.deleteSlug;const p=stograAdminProducts.find(x=>x.slug===slug);if(!p||!window.confirm('Hapus produk "'+p.name+'"? Tindakan ini tidak bisa dibatalkan.'))return;
+    try{const {data,error}=await chatSupabase.from("products").delete().eq("slug",slug).select("slug");if(error)throw error;if(!data?.length)throw new Error("Tidak ada baris terhapus. Periksa izin DELETE pada RLS.");await adminLoadProducts();adminMessage("Produk berhasil dihapus.");}
+    catch(error){adminMessage("Gagal menghapus: "+(error?.message||"Periksa izin RLS."),true);}
   }
+});
+adminEl("admin-product-reset").addEventListener("click",adminResetProductForm);
+adminEl("admin-products-refresh").addEventListener("click",adminLoadProducts);
+adminEl("admin-product-search").addEventListener("input",adminRenderProducts);
+adminEl("admin-logout").addEventListener("click",async()=>{
+  const button=adminEl("admin-logout");button.disabled=true;
+  try{await chatSupabase.auth.signOut();}finally{stograAdminUser=null;stograAdminProducts=[];adminEl("admin-workspace").hidden=true;adminEl("admin-login-card").hidden=false;adminEl("admin-login-message").textContent="Kamu sudah logout dari panel admin.";adminResetProductForm();setChatUser(null);button.disabled=false;}
 });
 document.getElementById("refresh-products").addEventListener("click", () => {
   window.__stograProductsLoaded = false;
