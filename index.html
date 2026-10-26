@@ -543,6 +543,20 @@ header nav.wrap{max-width:1280px;min-height:76px}
   <div class="wrap">© <span id="year"></span> STOGRA STORE. All rights reserved.</div>
 </footer>
 
+<button type="button" class="reset-local-data" id="reset-local-data" title="Reset preferensi lokal pada perangkat ini" aria-label="Reset preferensi lokal">↻ Reset Preferensi</button>
+
+<div class="product-detail-overlay" id="product-detail-overlay" role="dialog" aria-modal="true" aria-labelledby="product-detail-title">
+  <section class="product-detail-panel">
+    <button type="button" class="product-detail-close" id="product-detail-close" aria-label="Tutup detail produk">✕ Tutup</button>
+    <div class="tag" id="product-detail-category">DETAIL PRODUK</div>
+    <h2 id="product-detail-title">Detail Produk</h2>
+    <img id="product-detail-image" class="product-detail-image" alt="" hidden>
+    <p class="product-detail-price" id="product-detail-price"></p>
+    <div class="product-detail-description" id="product-detail-description"></div>
+    <div class="product-detail-actions"><a class="btn primary" id="product-detail-order" href="https://discord.gg/uwKk9znZem" target="_blank" rel="noopener">Tanya Staff di Discord →</a><button type="button" class="btn" id="product-detail-close-bottom">Tutup halaman produk</button></div>
+  </section>
+</div>
+
 <script>
 document.getElementById("year").textContent=new Date().getFullYear();
 function updateHeaderClock(){const now=new Date(),local=document.getElementById("header-local-clock");if(local){local.textContent=new Intl.DateTimeFormat("id-ID",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(now);local.dateTime=now.toISOString();}}
@@ -1095,18 +1109,8 @@ muatProdukStogra();
 </script>
 
 
-<button type="button" class="reset-local-data" id="reset-local-data" title="Reset preferensi lokal pada perangkat ini" aria-label="Reset preferensi lokal">↻ Reset Preferensi</button>
 
-<div class="product-detail-overlay" id="product-detail-overlay" role="dialog" aria-modal="true" aria-labelledby="product-detail-title">
-  <section class="product-detail-panel">
-    <button type="button" class="product-detail-close" id="product-detail-close" aria-label="Tutup detail produk">✕ Tutup</button>
-    <div class="tag" id="product-detail-category">DETAIL PRODUK</div>
-    <h2 id="product-detail-title">Detail Produk</h2>
-    <img id="product-detail-image" class="product-detail-image" alt="" hidden>
-    <p class="product-detail-price" id="product-detail-price"></p>
-    <div class="product-detail-description" id="product-detail-description"></div>
-    <div class="product-detail-actions"><a class="btn primary" id="product-detail-order" href="https://discord.gg/uwKk9znZem" target="_blank" rel="noopener">Tanya Staff di Discord →</a><button type="button" class="btn" id="product-detail-close-bottom">Tutup halaman produk</button></div>
-  </section>
-</div>
+
+
 </body>
 </html>
