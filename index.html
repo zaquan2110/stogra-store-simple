@@ -563,7 +563,7 @@ header nav.wrap{max-width:1280px;min-height:76px}
     </div>
   </div>
 
-<button type="button" class="admin-floating" data-screen="admin" aria-label="Buka login admin">⚙ Admin</button>
+
 
 <footer>
   <div class="wrap">© <span id="year"></span> STOGRA STORE. All rights reserved.</div>
@@ -627,6 +627,7 @@ function perluLoginUntukKomunikasi(namaScreen) {
 }
 
 function bukaScreen(nama, updateUrl = true) {
+  if (nama === "admin") { window.location.href = "admin.html"; return; }
   if (perluLoginUntukKomunikasi(nama)) return;
   document.querySelectorAll(".screen").forEach((screen) => {
     screen.classList.toggle("active", screen.id === "screen-" + nama);
@@ -1178,7 +1179,9 @@ function resetDataLokal() {
 document.getElementById("reset-local-data")?.addEventListener("click", resetDataLokal);
 
 const initialScreen = location.hash.replace("#", "");
-bukaScreen(["lobby","produk","informasi","komunikasi","pengumuman","profil","admin","pengaturan","media"].includes(initialScreen) ? initialScreen : "lobby", false);
+if (initialScreen === "admin") { window.location.replace("admin.html"); } else {
+  bukaScreen(["lobby","produk","informasi","komunikasi","pengumuman","profil","pengaturan","media"].includes(initialScreen) ? initialScreen : "lobby", false);
+}
 muatProdukStogra();
 </script>
 
