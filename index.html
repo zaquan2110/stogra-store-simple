@@ -1030,13 +1030,7 @@ async function muatProdukStogra() {
     card.tabIndex = 0;
     card.setAttribute("role", "button");
     card.setAttribute("aria-label", "Lihat detail " + (product.name || "produk"));
-    card.onclick = function () {
-      bukaDetailProduk(product);
-    };
     card.style.cursor = "pointer";
-    card.addEventListener("keydown", (event) => {
-      if (event.target === card && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); bukaDetailProduk(product); }
-    });
     card.appendChild(buatElemen("div", "tag", product.category || "PRODUK"));
 
     if (product.image_url) {
