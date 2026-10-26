@@ -1,0 +1,19 @@
+# STOGRA STORE — Netlify configuration
+# Static HTML site: index.html is served from the repository root.
+[build]
+  publish = "."
+
+# Security headers that do not interfere with Supabase or OAuth redirects.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "DENY"
+    Permissions-Policy = "geolocation=(), camera=(), microphone=()"
+
+# Avoid stale HTML after a new GitHub commit; Netlify/CDN can still serve assets normally.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
