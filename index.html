@@ -272,6 +272,51 @@ input,textarea,select{max-width:100%;font:inherit}
  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
 
+
+/* STOGRA visual refresh: cohesive layout and practical responsive navigation */
+:root{color-scheme:dark;--stogra-red:#f04452;--stogra-red-deep:#8e202b;--stogra-panel:#111113;--stogra-border:#29292e}
+body{background:radial-gradient(ellipse at 12% 0%,#28090e 0,transparent 36%),radial-gradient(ellipse at 90% 15%,#16080a 0,transparent 32%),#09090b;color:#f5f5f6}
+header{background:#09090bea;border-bottom:1px solid #ffffff12;backdrop-filter:blur(16px)}
+header nav.wrap{max-width:1280px;min-height:76px}
+.brand{text-decoration:none;letter-spacing:.08em;font-weight:950}
+.brand span{color:var(--stogra-red)}
+.nav-item{border-radius:999px;padding:10px 15px;white-space:nowrap;transition:background .18s,border-color .18s,color .18s}
+.nav-item:hover,.nav-item.active{background:#321015;border-color:#7c2730;color:#fff;box-shadow:inset 0 0 0 1px #f0445210}
+.hero{gap:clamp(24px,5vw,64px);align-items:center;padding-top:clamp(38px,6vw,84px);padding-bottom:clamp(36px,5vw,68px)}
+.hero h1{letter-spacing:-.045em}
+.hero-card,.product,.feature-card,.contact-card,.quick-stats div{border-color:#ffffff17;box-shadow:0 14px 45px #0003}
+.hero-card{background:linear-gradient(145deg,#1b1114,#0e0e10 70%);border-radius:22px}
+.btn{border-radius:10px;transition:transform .16s,border-color .16s,background .16s}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:linear-gradient(120deg,#c92738,#8e1726);border-color:#ed4756}
+.product{border-radius:16px;background:linear-gradient(155deg,#171719,#0d0d0f);cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s}
+.product:hover,.product:focus-visible{transform:translateY(-3px);border-color:#a72b38;box-shadow:0 14px 36px #0007,0 0 0 1px #f0445214;outline:none}
+.product:focus-visible{outline:2px solid #f04452;outline-offset:3px}
+.product-detail-overlay{z-index:1200}
+.product-detail-overlay.show{display:flex!important;visibility:visible;opacity:1}
+.product-detail-panel{width:min(600px,100%);border-color:#7f2731;background:linear-gradient(150deg,#1c0b0e,#101012 58%);box-shadow:-20px 0 90px #000b}
+.product-detail-close{cursor:pointer}
+.screen-nav{gap:6px}
+.reset-local-data{left:14px;right:auto;bottom:14px}
+@media(max-width:900px){
+ header nav.wrap{padding-block:12px;gap:10px}
+ .nav-right{width:100%;max-width:100%}
+ .links.screen-nav{display:flex;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;padding:5px 1px 10px}
+ .links.screen-nav .nav-item{flex:0 0 auto}
+}
+@media(max-width:640px){
+ .hero{grid-template-columns:minmax(0,1fr);padding-top:34px}
+ .hero-card{width:100%;max-width:none}
+ .section{padding-block:30px}
+ .section-head{margin-bottom:18px}
+ .product-detail-panel{width:100%;height:100dvh;max-height:100dvh;padding:18px;border-radius:0}
+ .product-detail-overlay.show{justify-content:stretch}
+ .product-detail-actions{display:grid;grid-template-columns:1fr}
+ .product-detail-actions>*{width:100%;text-align:center;justify-content:center}
+ .reset-local-data{left:10px;bottom:10px}
+}
+@media(prefers-reduced-motion:reduce){.product,.btn,.nav-item{transition:none}}
+
 </style>
 </head>
 
@@ -290,13 +335,9 @@ input,textarea,select{max-width:100%;font:inherit}
       <button class="nav-item active" data-screen="lobby">Lobby</button>
       <button class="nav-item" data-screen="produk">Produk</button>
       <button class="nav-item" data-screen="informasi">Informasi</button>
-      <button class="nav-item" data-screen="komunikasi">Komunikasi</button>
-      <button class="nav-item" data-screen="pengumuman">Pengumuman</button>
-      <button class="nav-item" data-screen="pengaturan">Pengaturan</button>
-      <button class="nav-item" data-screen="media">Media Sosial</button>
-      <button class="nav-item" data-screen="profil">Profil Akun</button>
-      
-      </div>
+      <button class="nav-item" data-screen="komunikasi">Bantuan</button>
+      <button class="nav-item" data-screen="profil">Akun</button>
+    </div>
     </div>
   </nav>
 </header>
@@ -852,27 +893,17 @@ async function initializeAuth(){
 initializeAuth();
 
 const productDetailOverlay = document.getElementById("product-detail-overlay");
-// Delegated click handler: keeps product opening reliable even if individual card handlers fail.
+// Stable delegated handler: product cards use their original array index, not rendered title text.
 document.addEventListener("click", function(event) {
-  const card = event.target.closest("#product-grid .product");
+  const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+  const card = target?.closest("#product-grid .product");
   if (!card) return;
-  const buttonOrLink = event.target.closest("a,button");
-  if (buttonOrLink && !buttonOrLink.classList.contains("product-open-label")) {
-    if (buttonOrLink.tagName === "A" && buttonOrLink.textContent.includes("Tanya Staff")) {
-      event.preventDefault();
-      event.stopPropagation();
-    } else if (buttonOrLink.classList.contains("product-open-label")) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-  }
-  const title = card.querySelector("h3")?.textContent || "";
-  const product = (window.__stograProductItems || []).find(item => (item.name || "Produk") === title);
-  if (product) {
-    event.preventDefault();
-    event.stopPropagation();
-    bukaDetailProduk(product);
-  }
+  const index = Number(card.dataset.productIndex);
+  const product = (window.__stograProductItems || [])[index];
+  if (!product) return;
+  event.preventDefault();
+  event.stopPropagation();
+  bukaDetailProduk(product);
 }, true);
 function tutupDetailProduk(){productDetailOverlay.classList.remove("show");productDetailOverlay.style.display="none";productDetailOverlay.setAttribute("aria-hidden","true");document.body.classList.remove("auth-modal-open");}
 document.getElementById("product-detail-close").addEventListener("click",tutupDetailProduk);
@@ -880,6 +911,7 @@ document.getElementById("product-detail-close-bottom").addEventListener("click",
 productDetailOverlay.addEventListener("click",e=>{if(e.target===productDetailOverlay)tutupDetailProduk();});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&productDetailOverlay.classList.contains("show"))tutupDetailProduk();});
 function bukaDetailProduk(product){
+ if (!product || !productDetailOverlay) return;
  document.getElementById("product-detail-category").textContent=product.category||"PRODUK";
  document.getElementById("product-detail-title").textContent=product.name||"Produk STOGRA STORE";
  const price=Number(product.price);
@@ -934,8 +966,9 @@ async function muatProdukStogra() {
 
   message.textContent = "Menampilkan " + data.length + " produk STOGRA STORE.";
 
-  data.forEach((product) => {
+  data.forEach((product, index) => {
     const card = buatElemen("article", "product");
+    card.dataset.productIndex = String(index);
     card.tabIndex = 0;
     card.setAttribute("role", "button");
     card.setAttribute("aria-label", "Lihat detail " + (product.name || "produk"));
