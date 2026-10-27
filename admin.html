@@ -9,7 +9,15 @@
 <form id="login-form" class="form"><label for="email">Email admin</label><input id="email" type="email" autocomplete="username" required placeholder="Email admin"><label for="password">Kata sandi</label><input id="password" type="password" autocomplete="current-password" required placeholder="Kata sandi"><button id="login-btn" class="btn primary">Masuk ke Panel Admin →</button><p id="login-status" class="status" role="status"></p></form><p class="foot">Akses perubahan produk juga ditentukan oleh kebijakan RLS Supabase. Jangan masukkan service-role key ke website.</p></section>
 <section id="workspace" class="workspace" hidden><div class="toolbar"><div><div class="eyebrow">STOGRA CONTROL CENTER</div><h1>Kelola Produk</h1><p class="muted" id="db-status">Memuat data…</p></div><button id="logout" class="btn">Logout Admin</button></div>
 <div class="metrics"><div class="metric"><span>Produk aktif</span><strong id="active-count">—</strong></div><div class="metric"><span>Total produk</span><strong id="total-count">—</strong></div><div class="metric"><span>Kategori</span><strong id="category-count">—</strong></div></div>
-<div class="columns"><section class="box"><h2 id="form-title">Tambah Produk</h2><form id="product-form" class="form"><input id="original-slug" type="hidden"><label for="name">Nama produk *</label><input id="name" maxlength="120" required placeholder="Roblox UI Pack"><label for="slug">Slug unik * <span style="color:#aaa;font-weight:400">— ID/link produk, dibuat otomatis dari nama</span></label><input id="slug" maxlength="140" required placeholder="roblox-ui-pack"><small id="slug-help" style="letter-spacing:0;color:#aaa">Contoh: “Roblox UI Pack” menjadi “roblox-ui-pack”. Harus berbeda dari produk lain.</small><label for="category">Kategori / channel Discord *</label><select id="category" required><option value="">Pilih kategori layanan…</option><option value="update-and-rework">📢 update-and-rework (Channel biasa)</option><option value="update-sedia">📄 update-sedia (Channel biasa)</option><option value="maps-product">🗺️ maps-product</option><option value="system-product">🎮 system-product</option><option value="model-product">💎 model-product</option><option value="uniforms">👔 uniforms</option><option value="strobo-vehichle">🚗 strobo-vehichle</option><option value="police-vehichle">🚓 police-vehichle</option><option value="army-vehichle">🪖 army-vehichle</option><option value="tank">🛡️ tank</option><option value="vehichle">🚗 vehichle</option><option value="discord-product">📄 discord-product</option><option value="cek-eligible">📄 cek-eligible</option><option value="jasa-dev-komunitas">📄 jasa-dev-komunitas</option><option value="STOGRA CONFIG">⚙️ STOGRA CONFIG</option><option value="stogra-bot-setup">🛠️ stogra-bot-setup</option><option value="katalog-stogra-store">📦 katalog-stogra-store</option></select><label for="price">Harga (Rupiah)</label><input id="price" type="number" min="0" step="1" placeholder="50000"><label for="image">URL gambar</label><input id="image" type="url" placeholder="https://..."><label for="description">Deskripsi produk</label><textarea id="description" placeholder="Detail produk..."></textarea><p class="muted">Produk disimpan di website. Perubahan produk tidak mengirim pesan otomatis ke Discord.</p><label for="status">Status katalog</label><select id="status"><option value="active">Aktif (tampil ke member)</option><option value="draft">Draft</option><option value="inactive">Nonaktif</option></select><button id="save" class="btn primary">Simpan Produk</button><button id="reset-product-form" type="button" class="btn">Form Baru</button><p id="form-status" class="status" role="status"></p></form></section>
+<div class="columns"><section class="box"><h2 id="form-title">Tambah Produk</h2>
+<div class="paste-product-box" style="border:1px solid #5b252c;background:#160d0e;padding:15px;border-radius:12px;margin:14px 0">
+<label for="product-paste-text">Tempel teks detail produk</label>
+<textarea id="product-paste-text" placeholder="Nama: Overhead UI V.4&#10;Kategori: system-product&#10;Harga: 60000&#10;Slug: overhead-ui-v4&#10;URL Gambar: https://...&#10;Status: active&#10;Deskripsi:&#10;Jelaskan detail produk di sini."></textarea>
+<button type="button" id="product-paste-fill" class="btn">Isi Form Produk Otomatis ↧</button>
+<p class="muted" style="margin-bottom:0">Tempel detail produk dengan label Nama, Kategori, Harga, Slug, URL Gambar, Status, dan Deskripsi. Setelah form terisi, periksa lalu klik Simpan Produk.</p>
+<p id="product-paste-status" class="status" role="status"></p>
+</div>
+<form id="product-form" class="form"><input id="original-slug" type="hidden"><label for="name">Nama produk *</label><input id="name" maxlength="120" required placeholder="Roblox UI Pack"><label for="slug">Slug unik * <span style="color:#aaa;font-weight:400">— ID/link produk, dibuat otomatis dari nama</span></label><input id="slug" maxlength="140" required placeholder="roblox-ui-pack"><small id="slug-help" style="letter-spacing:0;color:#aaa">Contoh: “Roblox UI Pack” menjadi “roblox-ui-pack”. Harus berbeda dari produk lain.</small><label for="category">Kategori / channel Discord *</label><select id="category" required><option value="">Pilih kategori layanan…</option><option value="update-and-rework">📢 update-and-rework (Channel biasa)</option><option value="update-sedia">📄 update-sedia (Channel biasa)</option><option value="maps-product">🗺️ maps-product</option><option value="system-product">🎮 system-product</option><option value="model-product">💎 model-product</option><option value="uniforms">👔 uniforms</option><option value="strobo-vehichle">🚗 strobo-vehichle</option><option value="police-vehichle">🚓 police-vehichle</option><option value="army-vehichle">🪖 army-vehichle</option><option value="tank">🛡️ tank</option><option value="vehichle">🚗 vehichle</option><option value="discord-product">📄 discord-product</option><option value="cek-eligible">📄 cek-eligible</option><option value="jasa-dev-komunitas">📄 jasa-dev-komunitas</option><option value="STOGRA CONFIG">⚙️ STOGRA CONFIG</option><option value="stogra-bot-setup">🛠️ stogra-bot-setup</option><option value="katalog-stogra-store">📦 katalog-stogra-store</option></select><label for="price">Harga (Rupiah)</label><input id="price" type="number" min="0" step="1" placeholder="50000"><label for="image">URL gambar</label><input id="image" type="url" placeholder="https://..."><label for="description">Deskripsi produk</label><textarea id="description" placeholder="Detail produk..."></textarea><p class="muted">Produk disimpan di website. Perubahan produk tidak mengirim pesan otomatis ke Discord.</p><label for="status">Status katalog</label><select id="status"><option value="active">Aktif (tampil ke member)</option><option value="draft">Draft</option><option value="inactive">Nonaktif</option></select><button id="save" class="btn primary">Simpan Produk</button><button id="reset-product-form" type="button" class="btn">Form Baru</button><p id="form-status" class="status" role="status"></p></form></section>
 <section class="box"><div class="toolbar"><h2>Daftar Produk</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="new-product" class="btn primary" type="button">＋ Buat Produk Baru</button><button id="refresh" class="btn" type="button">Muat Ulang</button></div></div><input id="search" class="search" placeholder="Cari nama, slug, kategori..."><div id="products" class="products"><p class="muted">Login untuk memuat produk.</p></div></section></div>
 <section class="box" style="margin:18px 0"><div class="eyebrow">KONTEN WEBSITE</div><h2 style="margin-top:8px">Kirim Komentar / Teks</h2><p class="muted">Pilih cara membuat konten, lalu tentukan tempat tampilnya. Semua yang dikirim hanya ke website STOGRA STORE, bukan ke Discord.</p>
 <form id="forum-form" class="form">
@@ -48,6 +56,50 @@ function msg(id,text,error=false){$(id).textContent=text;$(id).className="status
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function resetForm(){$("product-form").reset();$("original-slug").value="";$("form-title").textContent="Tambah Produk";$("save").textContent="Simpan Produk";msg("form-status","")}
 function makeSlug(v){return String(v||"").normalize("NFKD").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,140)}
+function parseProductPaste(){
+ const raw=$("product-paste-text").value.trim();
+ if(!raw){msg("product-paste-status","Tempel detail produk terlebih dahulu.",true);return}
+ const aliases={
+  name:["nama","nama produk","name","product","produk"],
+  category:["kategori","category","channel","kategori/channel"],
+  price:["harga","price","harga rupiah"],
+  slug:["slug","id produk","link produk"],
+  image:["url gambar","gambar","image","image url","foto","foto produk"],
+  status:["status","status katalog"],
+  description:["deskripsi","detail","detail produk","description","isi","keterangan"]
+ };
+ const lines=raw.split(/\r?\n/), fields={}, order=[];
+ let current=null;
+ for(const line of lines){
+  const match=line.match(/^\s*([^:：=]{1,40})\s*[:：=]\s*(.*)$/);
+  if(match){
+   const label=match[1].trim().toLowerCase();
+   const key=Object.keys(aliases).find(k=>aliases[k].includes(label));
+   if(key){current=key;if(!(key in fields)){fields[key]=match[2].trim();order.push(key)}else fields[key]+="\n"+match[2].trim();continue}
+  }
+  if(current){fields[current]=(fields[current]?fields[current]+"\n":"")+line}
+  else if(!fields.name){fields.name=line.trim();current="name";order.push("name")}
+  else {fields.description=(fields.description?fields.description+"\n":"")+line;current="description";if(!order.includes("description"))order.push("description")}
+ }
+ if(fields.name){$("name").value=fields.name.trim().slice(0,120);if(!$("original-slug").value)$("slug").value=makeSlug(fields.slug||fields.name)}
+ if(fields.slug&&!$("original-slug").value)$("slug").value=makeSlug(fields.slug);
+ if(fields.category){
+  const wanted=fields.category.trim().toLowerCase();
+  const option=[...$("category").options].find(o=>o.value.toLowerCase()===wanted||o.textContent.trim().toLowerCase()===wanted||o.textContent.toLowerCase().includes(wanted));
+  if(option)$("category").value=option.value;
+ }
+ if(fields.price){const price=fields.price.replace(/[^0-9,.-]/g,"").replace(/\.(?=.*\.)/g,"").replace(",",".");const n=Number(price);if(Number.isFinite(n)&&n>=0)$("price").value=String(Math.round(n))}
+ if(fields.image){$("image").value=fields.image.trim()}
+ if(fields.description){$("description").value=fields.description.trim()}
+ if(fields.status){const s=fields.status.trim().toLowerCase();if(["active","draft","inactive"].includes(s))$("status").value=s}
+ const missing=[];
+ if(!$("name").value.trim())missing.push("Nama");
+ if(!$("category").value)missing.push("Kategori (harus sesuai pilihan yang tersedia)");
+ if(!$("slug").value.trim())missing.push("Slug");
+ msg("product-paste-status",missing.length?"Form terisi sebagian. Periksa: "+missing.join(", ")+".":"Form produk berhasil diisi otomatis. Periksa semua kolom, lalu klik Simpan Produk.",missing.length>0);
+}
+$("product-paste-fill").addEventListener("click",parseProductPaste);
+$("product-paste-text").addEventListener("paste",()=>setTimeout(()=>{if($("product-paste-text").value.trim())parseProductPaste()},0));
 $("name").addEventListener("input",()=>{if(!$("original-slug").value)$("slug").value=makeSlug($("name").value)});
 async function loadProducts(){ $("db-status").textContent="Menghubungkan ke Supabase…";$("products").innerHTML='<p class="muted">Memuat katalog…</p>';const {data,error}=await db.from("products").select("name,slug,category,description,price,image_url,status,created_at").order("created_at",{ascending:false}).limit(500);if(error){$("db-status").textContent="Gagal membaca tabel products."; $("products").innerHTML='<p class="error">Gagal membaca produk: '+esc(error.message)+'</p>';return}products=data||[];$("db-status").textContent="Terhubung · "+products.length+" produk terbaca."; $("total-count").textContent=products.length;$("active-count").textContent=products.filter(p=>p.status==="active").length;$("category-count").textContent=new Set(products.map(p=>(p.category||"").trim()).filter(Boolean)).size;renderProducts()}
 function renderProducts(){const q=$("search").value.trim().toLowerCase();const rows=products.filter(p=>[p.name,p.slug,p.category,p.status].some(v=>String(v||"").toLowerCase().includes(q)));if(!rows.length){$("products").innerHTML='<p class="muted">Tidak ada produk ditemukan.</p>';return}$("products").innerHTML=rows.map(p=>'<article class="product"><div class="product-main">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="" onerror="this.hidden=true">':'<div class="placeholder">S</div>')+'<div class="product-info"><strong>'+esc(p.name)+'</strong><small>'+esc(p.category)+' · '+esc(p.slug)+'</small><span class="pill">Status: '+esc(p.status)+'</span></div></div><div class="actions"><button class="btn" data-edit="'+esc(p.slug)+'">Edit</button><button class="btn" data-delete="'+esc(p.slug)+'">Hapus</button></div></article>').join("")}
