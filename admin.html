@@ -11,7 +11,16 @@
 <div class="metrics"><div class="metric"><span>Produk aktif</span><strong id="active-count">—</strong></div><div class="metric"><span>Total produk</span><strong id="total-count">—</strong></div><div class="metric"><span>Kategori</span><strong id="category-count">—</strong></div></div>
 <div class="columns"><section class="box"><h2 id="form-title">Tambah Produk</h2><form id="product-form" class="form"><input id="original-slug" type="hidden"><label for="name">Nama produk *</label><input id="name" maxlength="120" required placeholder="Roblox UI Pack"><label for="slug">Slug unik * <span style="color:#aaa;font-weight:400">— ID/link produk, dibuat otomatis dari nama</span></label><input id="slug" maxlength="140" required placeholder="roblox-ui-pack"><small id="slug-help" style="letter-spacing:0;color:#aaa">Contoh: “Roblox UI Pack” menjadi “roblox-ui-pack”. Harus berbeda dari produk lain.</small><label for="category">Kategori / channel Discord *</label><select id="category" required><option value="">Pilih kategori layanan…</option><option value="update-and-rework">📢 update-and-rework (Channel biasa)</option><option value="update-sedia">📄 update-sedia (Channel biasa)</option><option value="maps-product">🗺️ maps-product</option><option value="system-product">🎮 system-product</option><option value="model-product">💎 model-product</option><option value="uniforms">👔 uniforms</option><option value="strobo-vehichle">🚗 strobo-vehichle</option><option value="police-vehichle">🚓 police-vehichle</option><option value="army-vehichle">🪖 army-vehichle</option><option value="tank">🛡️ tank</option><option value="vehichle">🚗 vehichle</option><option value="discord-product">📄 discord-product</option><option value="cek-eligible">📄 cek-eligible</option><option value="jasa-dev-komunitas">📄 jasa-dev-komunitas</option><option value="STOGRA CONFIG">⚙️ STOGRA CONFIG</option><option value="stogra-bot-setup">🛠️ stogra-bot-setup</option><option value="katalog-stogra-store">📦 katalog-stogra-store</option></select><label for="price">Harga (Rupiah)</label><input id="price" type="number" min="0" step="1" placeholder="50000"><label for="image">URL gambar</label><input id="image" type="url" placeholder="https://..."><label for="description">Deskripsi produk</label><textarea id="description" placeholder="Detail produk..."></textarea><p class="muted">Produk disimpan di website. Perubahan produk tidak mengirim pesan otomatis ke Discord.</p><label for="status">Status katalog</label><select id="status"><option value="active">Aktif (tampil ke member)</option><option value="draft">Draft</option><option value="inactive">Nonaktif</option></select><button id="save" class="btn primary">Simpan Produk</button><button id="reset" type="button" class="btn">Form Baru</button><p id="form-status" class="status" role="status"></p></form></section>
 <section class="box"><div class="toolbar"><h2>Daftar Produk</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="new-product" class="btn primary" type="button">＋ Buat Produk Baru</button><button id="refresh" class="btn" type="button">Muat Ulang</button></div></div><input id="search" class="search" placeholder="Cari nama, slug, kategori..."><div id="products" class="products"><p class="muted">Login untuk memuat produk.</p></div></section></div>
-<section class="box" style="margin-top:18px"><div class="eyebrow">CODE MANAGEMENT</div><h2 style="margin-top:8px">Kelola Semua Kode</h2><p class="muted">Kode produk, voucher promo, dan redeem dikelola di website. Kode verifikasi dibuat oleh sistem backend agar tidak bisa dipalsukan.</p>
+<section class="box" style="margin:18px 0"><div class="eyebrow">WEBSITE FORUM</div><h2 style="margin-top:8px">Buat Postingan Forum</h2><p class="muted">Tempel teks di bawah. Judul dan isi akan diisi otomatis jika formatnya dikenali. Kamu juga bisa mengisi judul dan isi secara manual. Hanya admin yang dapat menerbitkan postingan.</p>
+<form id="forum-form" class="form">
+<label for="forum-paste">Tempel teks di sini (opsional)</label>
+<textarea id="forum-paste" placeholder="Contoh:\nJudul: Update Produk STOGRA\nIsi: Produk baru sudah tersedia di katalog."></textarea>
+<button type="button" id="forum-parse" class="btn">Isi Form dari Teks ↧</button>
+<label for="forum-title">Judul postingan *</label><input id="forum-title" maxlength="180" required placeholder="Judul forum">
+<label for="forum-body">Isi postingan *</label><textarea id="forum-body" required maxlength="20000" placeholder="Tulis isi postingan atau tempel teks di atas..."></textarea>
+<div style="display:flex;gap:10px;flex-wrap:wrap"><button id="forum-send" class="btn primary" type="submit">Kirim ke Forum Website</button><button id="forum-clear" class="btn" type="button">Kosongkan Form</button></div>
+<p id="forum-status" class="status" role="status"></p>
+</form><div class="foot">Postingan yang diterbitkan akan tampil di forum website. Tidak dikirim ke Discord.</div></section><section class="box" style="margin-top:18px"><div class="eyebrow">CODE MANAGEMENT</div><h2 style="margin-top:8px">Kelola Semua Kode</h2><p class="muted">Kode produk, voucher promo, dan redeem dikelola di website. Kode verifikasi dibuat oleh sistem backend agar tidak bisa dipalsukan.</p>
 <div class="columns">
 <section class="box"><h2>Kode Produk</h2><form id="pc-form" class="form"><label>Produk</label><select id="pc-slug" required><option value="">Pilih produk…</option></select><button class="btn primary">Buat Kode Produk</button><p id="pc-status" class="status"></p></form><div id="pc-list" class="products"></div></section>
 <section class="box"><h2>Kode Promo / Voucher</h2><form id="promo-form" class="form"><label>Kode promo</label><input id="promo-code" required maxlength="50" placeholder="STOGRA10"><label>Jenis diskon</label><select id="promo-type"><option value="percent">Persentase (%)</option><option value="fixed">Potongan rupiah (Rp)</option></select><label>Nilai diskon</label><input id="promo-value" type="number" min="1" required><label>Maksimal penggunaan (kosong = tanpa batas)</label><input id="promo-max" type="number" min="1"><label>Kedaluwarsa (opsional)</label><input id="promo-expiry" type="datetime-local"><button class="btn primary">Simpan Kode Promo</button><p id="promo-status" class="status"></p></form><div id="promo-list" class="products"></div></section>
@@ -37,6 +46,44 @@ $("login-form").addEventListener("submit",async e=>{e.preventDefault();$("login-
 $("product-form").addEventListener("submit",async e=>{e.preventDefault();if(adminUser?.app_metadata?.role!=="admin"){msg("form-status","Sesi admin tidak valid. Login kembali.",true);return}const name=$("name").value.trim(),slug=$("slug").value.trim().toLowerCase().replace(/[^a-z0-9-]/g,"-").replace(/-+/g,"-").replace(/^-|-$/g,""),category=$("category").value.trim(),raw=$("price").value,price=raw===""?null:Number(raw);if(!name||!slug||!category){msg("form-status","Nama, slug, dan kategori wajib diisi.",true);return}if(price!==null&&(!Number.isFinite(price)||price<0)){msg("form-status","Harga tidak valid.",true);return}const payload={name,slug,category,price,image_url:$("image").value.trim()||null,description:$("description").value.trim(),status:$("status").value};const messageMode=$("message-mode").value;const discordMessage=$("discord-message").value.trim();const old=$("original-slug").value;$("save").disabled=true;msg("form-status","Menyimpan…");try{const r=old?await db.from("products").update(payload).eq("slug",old).select("slug"):await db.from("products").insert(payload).select("slug");if(r.error)throw r.error;if(!r.data?.length)throw new Error("Tidak ada data berubah. Periksa izin RLS INSERT/UPDATE.");const savedProduct={...payload,slug:r.data[0].slug};resetForm();await loadProducts();msg("form-status",old?"Produk berhasil diperbarui.":"Produk berhasil ditambahkan.");}catch(e){msg("form-status","Gagal menyimpan: "+(e.message||"Periksa izin RLS."),true)}finally{$("save").disabled=false}});
 $("products").addEventListener("click",async e=>{const ed=e.target.closest("[data-edit]"),del=e.target.closest("[data-delete]");if(ed){editProduct(ed.dataset.edit);return}if(del){const p=products.find(x=>x.slug===del.dataset.delete);if(!p||!confirm('Hapus produk "'+p.name+'"?'))return;const r=await db.from("products").delete().eq("slug",p.slug).select("slug");if(r.error){msg("form-status","Gagal menghapus: "+r.error.message,true);return}if(!r.data?.length){msg("form-status","Tidak ada produk terhapus. Periksa izin RLS DELETE.",true);return}await loadProducts();msg("form-status","Produk berhasil dihapus.")}});
 
+
+function forumMsg(text,error=false){$("forum-status").textContent=text;$("forum-status").className="status "+(error?"error":"success")}
+function parseForumPaste(){
+ const raw=$("forum-paste").value.trim();
+ if(!raw){forumMsg("Tempel teks terlebih dahulu, atau isi judul dan isi secara manual.",true);return}
+ const lines=raw.split(/\r?\n/), titleLine=lines.findIndex(x=>/^\s*(judul|title)\s*:/i.test(x)), bodyLine=lines.findIndex(x=>/^\s*(isi|konten|content|deskripsi|body)\s*:/i.test(x));
+ let title="",body="";
+ if(titleLine>=0){
+  title=lines[titleLine].replace(/^\s*(judul|title)\s*:\s*/i,"").trim();
+  body=bodyLine>=0?lines.slice(bodyLine+1).map(x=>x.replace(/^\s*(isi|konten|content|deskripsi|body)\s*:\s*/i,"")).join("\n").trim():lines.filter((_,i)=>i!==titleLine).join("\n").trim();
+  if(bodyLine>=0&&lines[bodyLine].trim())body=lines.slice(bodyLine).map((x,i)=>i===0?x.replace(/^\s*(isi|konten|content|deskripsi|body)\s*:\s*/i,""):x).join("\n").trim();
+ }else{
+  const nonempty=lines.findIndex(x=>x.trim());
+  title=nonempty>=0?lines[nonempty].trim():"";
+  body=lines.filter((_,i)=>i!==nonempty).join("\n").trim();
+  if(!body){body=title;title=title.slice(0,100)}
+ }
+ if(title)$("forum-title").value=title.slice(0,180);
+ if(body)$("forum-body").value=body.slice(0,20000);
+ forumMsg("Teks diproses. Periksa judul dan isi, lalu klik Kirim ke Forum Website.");
+}
+$("forum-parse").addEventListener("click",parseForumPaste);
+$("forum-paste").addEventListener("paste",()=>setTimeout(()=>{const v=$("forum-paste").value.trim();if(v){const lines=v.split(/\r?\n/);if(lines.some(x=>/^\s*(judul|title|isi|konten|content|deskripsi|body)\s*:/i.test(x))||lines.length>1)parseForumPaste();else{ $("forum-title").value=v.slice(0,180);$("forum-body").value=v;forumMsg("Teks ditempel. Judul dan isi otomatis diisi; kamu bisa mengubahnya sebelum mengirim.")}}},0));
+$("forum-form").addEventListener("submit",async e=>{
+ e.preventDefault();
+ if(adminUser?.app_metadata?.role!=="admin"){forumMsg("Login admin diperlukan.",true);return}
+ const title=$("forum-title").value.trim(),body=$("forum-body").value.trim();
+ if(!title||!body){forumMsg("Judul dan isi wajib diisi.",true);return}
+ $("forum-send").disabled=true;forumMsg("Menerbitkan postingan...");
+ try{
+  const {data:{user}}=await db.auth.getUser();
+  const {error}=await db.from("forum_posts").insert({title,body,status:"published",created_by:user?.id||null});
+  if(error)throw error;
+  $("forum-form").reset();forumMsg("Postingan berhasil diterbitkan di forum website. Tidak ada pesan yang dikirim ke Discord.");
+ }catch(err){forumMsg("Gagal mengirim: "+(err.message||"Periksa tabel forum_posts dan izin database."),true)}
+ finally{$("forum-send").disabled=false}
+});
+$("forum-clear").addEventListener("click",()=>{$("forum-form").reset();forumMsg("")});
 // Kode: semua perubahan tersimpan di Supabase website, tidak mengirim produk ke Discord.
 const codeTables=[
  {table:"product_codes",list:"pc-list",status:"pc-status"},
