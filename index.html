@@ -349,7 +349,7 @@ header nav.wrap{max-width:1280px;min-height:76px}
       <button class="nav-item active" data-screen="lobby">Lobby</button>
       <button class="nav-item" data-screen="produk">Produk</button>
       <button class="nav-item" data-screen="informasi">Informasi</button>
-      <button class="nav-item" data-screen="forum">Forum</button>
+      <button class="nav-item" data-screen="pengumuman">Pengumuman</button>
       <button class="nav-item" data-screen="komunikasi">Bantuan</button>
       <button class="nav-item" data-screen="profil">Akun</button>
     </div>
@@ -423,12 +423,6 @@ header nav.wrap{max-width:1280px;min-height:76px}
       <details class="faq"><summary>Bagaimana proses pembayaran?</summary><p>Konfirmasikan metode pembayaran dan instruksi terbaru langsung kepada staff resmi. Jangan mengirim pembayaran sebelum detail pesanan disepakati.</p></details>
       <details class="faq"><summary>Apakah produk langsung dikirim otomatis?</summary><p>Untuk saat ini, konfirmasi pesanan dan pengiriman perlu dibicarakan dengan staff. Website ini belum memproses pembayaran atau pengiriman digital secara otomatis.</p></details>
     </div>
-  </section>
-
-  <section id="screen-forum" class="screen section wrap">
-    <div class="section-head"><small>STOGRA COMMUNITY</small><h2>Forum <span class="red">Website</span></h2><p class="sub">Postingan resmi dari admin STOGRA STORE.</p></div>
-    <div id="forum-post-list" class="announcement-list"><div class="announcement-card"><p>Memuat postingan forum…</p></div></div>
-    <p id="forum-public-status" class="sub" role="status" aria-live="polite"></p>
   </section>
 
   <section id="screen-pengumuman" class="screen section wrap">
@@ -651,7 +645,6 @@ function bukaScreen(nama, updateUrl = true) {
     else button.removeAttribute("aria-current");
   });
   if (nama === "produk" && !window.__stograProductsLoaded) muatProdukStogra();
-  if (nama === "forum") muatForumPosts();
   if (nama === "pengumuman") muatPengumumanWebsite();
   window.scrollTo({ top: 0, behavior: "smooth" });
   // Jangan menimpa URL saat halaman pertama kali dibuka: OAuth Google dapat
@@ -1136,41 +1129,6 @@ async function muatPengumumanWebsite(){
   holder.replaceChildren(buatElemen("article","announcement-card","Pengumuman terbaru belum dapat dimuat."));
  }finally{announcementsLoading=false}
 }
-let forumLoading=false;
-async function muatForumPosts(){
- if(forumLoading)return;
- forumLoading=true;
- const list=document.getElementById("forum-post-list");
- const status=document.getElementById("forum-public-status");
- if(!list||!status){forumLoading=false;return}
- list.replaceChildren();
- list.appendChild(buatElemen("div","announcement-card","Memuat postingan forum…"));
- try{
-  const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-  const {data,error}=await client.from("forum_posts").select("id,title,body,created_at").eq("status","published").order("created_at",{ascending:false}).limit(100);
-  if(error)throw error;
-  list.replaceChildren();
-  if(!data||!data.length){list.appendChild(buatElemen("article","announcement-card","Belum ada postingan forum. Silakan cek kembali nanti."));status.textContent="";return}
-  data.forEach(post=>{
-   const card=buatElemen("article","announcement-card");
-   const top=buatElemen("div","announcement-top");
-   top.appendChild(buatElemen("span","tag","POSTINGAN RESMI"));
-   const date=buatElemen("span","announcement-date",post.created_at?new Date(post.created_at).toLocaleString("id-ID"):"STOGRA STORE");
-   top.appendChild(date);card.appendChild(top);
-   card.appendChild(buatElemen("h3","",post.title||"Postingan STOGRA"));
-   const body=buatElemen("p","",post.body||"");
-   body.style.whiteSpace="pre-wrap";
-   card.appendChild(body);list.appendChild(card);
-  });
-  status.textContent="Menampilkan "+data.length+" postingan terbaru.";
- }catch(err){
-  console.error("Forum STOGRA error:",err);
-  list.replaceChildren();
-  list.appendChild(buatElemen("article","announcement-card","Forum belum dapat dimuat. Admin perlu memastikan tabel forum_posts dan izin database sudah disiapkan."));
-  status.textContent="Koneksi forum belum siap.";
- }finally{forumLoading=false}
-}
-
 async function muatProdukStogra() {
   if (!window.supabase || SUPABASE_PUBLISHABLE_KEY === "GANTI_DENGAN_PUBLISHABLE_KEY_KAMU") {
     message.textContent = "Koneksi belum siap. Periksa Publishable key Supabase di konfigurasi website.";
