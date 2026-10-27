@@ -1136,6 +1136,7 @@ async function muatPengumumanWebsite(){
   holders.forEach(holder=>holder.replaceChildren(buatElemen("article","announcement-card","Pengumuman terbaru belum dapat dimuat.")));
  }finally{announcementsLoading=false}
 }
+muatPengumumanWebsite();
 async function muatProdukStogra() {
   if (!window.supabase || SUPABASE_PUBLISHABLE_KEY === "GANTI_DENGAN_PUBLISHABLE_KEY_KAMU") {
     message.textContent = "Koneksi belum siap. Periksa Publishable key Supabase di konfigurasi website.";
