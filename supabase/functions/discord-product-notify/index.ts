@@ -96,7 +96,9 @@ serve(async (req) => {
 
     const target = new URL(webhook);
     target.searchParams.set("wait", "true");
-    const payload: Record<string, unknown> = messageMode === "text"\n      ? { content: (customMessage || `**${action}: ${p.name}**\nKategori: ${p.category}\nHarga: ${rupiah(p.price)}\n${description}`).slice(0, 1900) }\n      : { embeds: [embed] };
+    const payload: Record<string, unknown> = messageMode === "text"
+      ? { content: (customMessage || `**${action}: ${p.name}**\nKategori: ${p.category}\nHarga: ${rupiah(p.price)}\n${description}`).slice(0, 1900) }
+      : { embeds: [embed] };
     if (!plainTextCategories.has(p.category)) {
       // Discord Forum channels require a thread name when creating a new forum post.
       target.searchParams.set("thread_name", (p.name + " • " + p.slug).slice(0, 100));
