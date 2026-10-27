@@ -60,7 +60,9 @@ serve(async (req) => {
   try {
     const body = await req.json();
     const p = body?.product;
-    const action = body?.action === "updated" ? "DIPERBARUI" : "PRODUK BARU";\n    const messageMode = body?.messageMode === "text" ? "text" : "embed";\n    const customMessage = typeof body?.discordMessage === "string" ? body.discordMessage.trim().slice(0, 1800) : "";
+    const action = body?.action === "updated" ? "DIPERBARUI" : "PRODUK BARU";
+    const messageMode = body?.messageMode === "text" ? "text" : "embed";
+    const customMessage = typeof body?.discordMessage === "string" ? body.discordMessage.trim().slice(0, 1800) : "";
     if (!p || typeof p.name !== "string" || typeof p.slug !== "string" || typeof p.category !== "string") {
       return Response.json({ error: "Data produk tidak lengkap" }, { status: 400, headers: corsHeaders });
     }
@@ -94,7 +96,7 @@ serve(async (req) => {
 
     const target = new URL(webhook);
     target.searchParams.set("wait", "true");
-    const payload: Record<string, unknown> = messageMode === "text"\n      ? { content: (customMessage || `**${action}: ${p.name}**\\nKategori: ${p.category}\\nHarga: ${rupiah(p.price)}\\n${description}`).slice(0, 1900) }\n      : { embeds: [embed] };
+    const payload: Record<string, unknown> = messageMode === "text"\n      ? { content: (customMessage || `**${action}: ${p.name}**\nKategori: ${p.category}\nHarga: ${rupiah(p.price)}\n${description}`).slice(0, 1900) }\n      : { embeds: [embed] };
     if (!plainTextCategories.has(p.category)) {
       // Discord Forum channels require a thread name when creating a new forum post.
       target.searchParams.set("thread_name", (p.name + " • " + p.slug).slice(0, 100));
