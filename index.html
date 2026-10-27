@@ -395,6 +395,10 @@ header nav.wrap{max-width:1280px;min-height:76px}
         <div class="lobby-status"><span class="status-dot"></span> Katalog terhubung ke database</div>
       </aside>
     </section>
+    <section class="section wrap" style="padding-bottom:8px">
+      <div class="section-head"><small>INFO TERBARU</small><h2>Pengumuman <span class="red">STOGRA</span></h2><p class="sub">Informasi terbaru yang diterbitkan admin langsung dari dashboard.</p></div>
+      <div id="home-dynamic-announcements" class="announcement-list" aria-live="polite"><article class="announcement-card">Memuat pengumuman…</article></div>
+    </section>
     <section class="section wrap">
       <div class="section-head"><small>QUICK ACCESS</small><h2>Mulai dari sini</h2><p class="sub">Setiap menu punya fungsi khusus supaya kamu lebih mudah menemukan yang dibutuhkan.</p></div>
       <div class="grid">
@@ -1114,19 +1118,22 @@ async function muatPesanProduk(slug){
 }
 let announcementsLoading=false;
 async function muatPengumumanWebsite(){
- const holder=document.getElementById("dynamic-announcements");
- if(!holder||announcementsLoading)return;
+ if(announcementsLoading)return;
+ const holders=["home-dynamic-announcements","dynamic-announcements"].map(id=>document.getElementById(id)).filter(Boolean);
+ if(!holders.length)return;
  announcementsLoading=true;
- holder.replaceChildren(buatElemen("article","announcement-card","Memuat pengumuman terbaru…"));
+ holders.forEach(holder=>holder.replaceChildren(buatElemen("article","announcement-card","Memuat pengumuman terbaru…")));
  try{
   const {data,error}=await getSiteContentClient().from("forum_posts").select("id,title,body,created_at").eq("status","published").eq("target_type","announcement").order("created_at",{ascending:false}).limit(50);
   if(error)throw error;
-  holder.replaceChildren();
-  if(!data||!data.length){holder.appendChild(buatElemen("article","announcement-card","Belum ada pengumuman baru dari admin."));return}
-  data.forEach(post=>holder.appendChild(renderSiteMessage(post,"PENGUMUMAN RESMI")));
+  holders.forEach(holder=>{
+   holder.replaceChildren();
+   if(!data||!data.length){holder.appendChild(buatElemen("article","announcement-card","Belum ada pengumuman baru dari admin."));return}
+   data.forEach(post=>holder.appendChild(renderSiteMessage(post,"PENGUMUMAN RESMI")));
+  });
  }catch(err){
   console.error("Website announcements:",err);
-  holder.replaceChildren(buatElemen("article","announcement-card","Pengumuman terbaru belum dapat dimuat."));
+  holders.forEach(holder=>holder.replaceChildren(buatElemen("article","announcement-card","Pengumuman terbaru belum dapat dimuat.")));
  }finally{announcementsLoading=false}
 }
 async function muatProdukStogra() {
