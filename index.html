@@ -433,6 +433,7 @@ header nav.wrap{max-width:1280px;min-height:76px}
 
   <section id="screen-pengumuman" class="screen section wrap">
     <div class="section-head"><small>OFFICIAL ANNOUNCEMENTS</small><h2>Pusat Pengumuman</h2><p class="sub">Informasi penting dan pembaruan resmi STOGRA STORE.</p></div>
+    <div id="dynamic-announcements" class="announcement-list" aria-live="polite"></div>
     <div class="announcement-list">
       <article class="announcement-card"><div class="announcement-top"><span class="tag">INFORMASI TOKO</span><span class="announcement-date">INFO</span></div><h3>Selamat datang di STOGRA STORE</h3><p>Gunakan katalog untuk melihat produk yang tersedia. Untuk konfirmasi harga, detail produk, dan pemesanan, hubungi staff melalui Discord resmi.</p></article>
       <article class="announcement-card"><div class="announcement-top"><span class="tag">KEAMANAN</span><span class="announcement-date">PENTING</span></div><h3>Pastikan komunikasi melalui kanal resmi</h3><p>Jangan membagikan kata sandi atau informasi sensitif. Konfirmasikan detail pesanan dan instruksi pembayaran dengan staff sebelum melakukan transaksi.</p></article>
@@ -586,6 +587,10 @@ header nav.wrap{max-width:1280px;min-height:76px}
     <img id="product-detail-image" class="product-detail-image" alt="" hidden>
     <p class="product-detail-price" id="product-detail-price"></p>
     <div class="product-detail-description" id="product-detail-description"></div>
+    <section class="product-site-messages" style="margin-top:24px;padding-top:18px;border-top:1px solid #382126">
+      <div class="tag">KOMENTAR / INFO RESMI</div><h3 style="margin:8px 0 12px">Informasi Produk</h3>
+      <div id="product-site-messages"><p class="sub">Memuat informasi produk…</p></div>
+    </section>
     <div class="product-detail-actions"><a class="btn primary" id="product-detail-order" href="https://discord.gg/uwKk9znZem" target="_blank" rel="noopener">Tanya Staff di Discord →</a><button type="button" class="btn" id="product-detail-close-bottom">Tutup halaman produk</button></div>
   </section>
 </div>
@@ -647,6 +652,7 @@ function bukaScreen(nama, updateUrl = true) {
   });
   if (nama === "produk" && !window.__stograProductsLoaded) muatProdukStogra();
   if (nama === "forum") muatForumPosts();
+  if (nama === "pengumuman") muatPengumumanWebsite();
   window.scrollTo({ top: 0, behavior: "smooth" });
   // Jangan menimpa URL saat halaman pertama kali dibuka: OAuth Google dapat
   // mengembalikan ?code=... yang harus dibaca Supabase untuk membuat sesi.
@@ -1057,6 +1063,7 @@ function bukaDetailProduk(product) {
     ? new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(numericPrice)
     : "Hubungi staff untuk harga";
   description.textContent = product.description || "Belum ada deskripsi detail. Hubungi staff untuk informasi lebih lanjut.";
+  muatPesanProduk(product.slug);
 
   image.onerror = () => { image.hidden = true; };
   if (product.image_url) {
@@ -1075,6 +1082,59 @@ function bukaDetailProduk(product) {
   document.body.classList.add("auth-modal-open");
   document.body.style.overflow = "hidden";
   document.getElementById("product-detail-close")?.focus();
+}
+let siteContentClient=null;
+function getSiteContentClient(){
+ if(!siteContentClient)siteContentClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+ return siteContentClient;
+}
+function renderSiteMessage(post, label){
+ const card=buatElemen("article","announcement-card");
+ const top=buatElemen("div","announcement-top");
+ top.appendChild(buatElemen("span","tag",label));
+ top.appendChild(buatElemen("span","announcement-date",post.created_at?new Date(post.created_at).toLocaleString("id-ID"):"STOGRA STORE"));
+ card.appendChild(top);
+ card.appendChild(buatElemen("h3","",post.title||"Informasi STOGRA STORE"));
+ const body=buatElemen("p","",post.body||"");
+ body.style.whiteSpace="pre-wrap";
+ card.appendChild(body);
+ return card;
+}
+let productMessagesRequest=0;
+async function muatPesanProduk(slug){
+ const holder=document.getElementById("product-site-messages");
+ if(!holder)return;
+ const requestId=++productMessagesRequest;
+ holder.replaceChildren(buatElemen("p","sub","Memuat informasi produk…"));
+ if(!slug){holder.replaceChildren(buatElemen("p","sub","Produk belum memiliki identitas."));return}
+ try{
+  const {data,error}=await getSiteContentClient().from("forum_posts").select("id,title,body,created_at").eq("status","published").eq("target_type","product").eq("product_slug",slug).order("created_at",{ascending:false}).limit(30);
+  if(error)throw error;
+  if(requestId!==productMessagesRequest)return;
+  holder.replaceChildren();
+  if(!data||!data.length){holder.appendChild(buatElemen("p","sub","Belum ada komentar atau informasi tambahan untuk produk ini."));return}
+  data.forEach(post=>holder.appendChild(renderSiteMessage(post,"INFO PRODUK")));
+ }catch(err){
+  console.error("Product site messages:",err);
+  if(requestId===productMessagesRequest)holder.replaceChildren(buatElemen("p","sub","Informasi tambahan belum dapat dimuat."));
+ }
+}
+let announcementsLoading=false;
+async function muatPengumumanWebsite(){
+ const holder=document.getElementById("dynamic-announcements");
+ if(!holder||announcementsLoading)return;
+ announcementsLoading=true;
+ holder.replaceChildren(buatElemen("article","announcement-card","Memuat pengumuman terbaru…"));
+ try{
+  const {data,error}=await getSiteContentClient().from("forum_posts").select("id,title,body,created_at").eq("status","published").eq("target_type","announcement").order("created_at",{ascending:false}).limit(50);
+  if(error)throw error;
+  holder.replaceChildren();
+  if(!data||!data.length){holder.appendChild(buatElemen("article","announcement-card","Belum ada pengumuman baru dari admin."));return}
+  data.forEach(post=>holder.appendChild(renderSiteMessage(post,"PENGUMUMAN RESMI")));
+ }catch(err){
+  console.error("Website announcements:",err);
+  holder.replaceChildren(buatElemen("article","announcement-card","Pengumuman terbaru belum dapat dimuat."));
+ }finally{announcementsLoading=false}
 }
 let forumLoading=false;
 async function muatForumPosts(){
